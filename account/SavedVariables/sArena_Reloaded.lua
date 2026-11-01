@@ -1,0 +1,102 @@
+
+sArena_ReloadedDB = {
+["profileKeys"] = {
+["Güth - Nightslayer"] = "Default",
+["Võre - Nightslayer"] = "Default",
+["Urbro - Nightslayer"] = "Default",
+["Tevito - Nightslayer"] = "Default",
+["Fjsahf - Nightslayer"] = "Default",
+["Banquim - Nightslayer"] = "Default",
+["Auuc - Dreamscythe"] = "Default",
+["Chudpal - Nightslayer"] = "Default",
+["Damorin - Nightslayer"] = "Default",
+["Âbra - Nightslayer"] = "Default",
+["Gîanna - Dreamscythe"] = "Default",
+},
+["profiles"] = {
+["Default"] = {
+["layoutSettings"] = {
+["BlizzArena"] = {
+["dr"] = {
+["posY"] = 26,
+["brightDRBorder"] = true,
+["drCategorySizeOffsets"] = {
+},
+["posX"] = -65,
+["drBorderGlowOff"] = false,
+["thickPixelBorder"] = false,
+["thinPixelBorder"] = false,
+},
+["racial"] = {
+["posX"] = -88,
+},
+["trinketCircleBorder"] = false,
+["changeFont"] = true,
+["frameFont"] = "DorisPP",
+["posX"] = 304.4,
+["textures"] = {
+["bgColor"] = {
+nil,
+nil,
+nil,
+1,
+},
+["castbarUninterruptibleTexture"] = "AlwaysWork",
+["castbarStatusBarTexture"] = "Asuri",
+["healStatusBarTexture"] = "Asuri",
+["generalStatusBarTexture"] = "Asuri",
+},
+["posY"] = 90,
+["petFrames"] = {
+["petFrameRangeCheck"] = {
+},
+["scale"] = 0.88,
+},
+["trinket"] = {
+["posX"] = -63,
+},
+["widgets"] = {
+["combatIndicator"] = {
+["enabled"] = false,
+},
+},
+["replaceClassIcon"] = false,
+["textSettings"] = {
+["castbarSize"] = 0.7000000000000001,
+["forceCastbarTextWidth"] = false,
+},
+["cdFont"] = "DorisPP",
+["castBar"] = {
+["hideCastbarIcon"] = false,
+["scale"] = 1.2,
+["hideCastbarSpark"] = false,
+["useModernCastbars"] = false,
+["posX"] = -126,
+["hideCastbars"] = false,
+["hideBorderShield"] = false,
+["width"] = 80,
+},
+["hideSpecIcon"] = false,
+["showSpecManaText"] = false,
+["spacing"] = 23,
+},
+},
+["tbcStunIconFix"] = true,
+["darkModeValue"] = 0.12,
+["darkMode"] = true,
+["dbClean2"] = true,
+["drResetTimeFix"] = true,
+["currentLayout"] = "BlizzArena",
+["dbClean1"] = true,
+["formatNumbersFix"] = true,
+["petFrames"] = {
+["statusText"] = {
+["formatNumbers"] = false,
+},
+},
+["drResetTime"] = 20,
+["showCastbarTarget"] = false,
+["showCastbarID"] = false,
+},
+},
+}

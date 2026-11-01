@@ -1,0 +1,92 @@
+VER 3 0100000000000001 " " "134400"
+#showtooltip
+/cast [@focus] Shadowstep
+END
+VER 3 0100000000000002 " " "134400"
+#showtooltip Sap
+/cleartarget
+/targetenemyplayer
+/cast [harm, nodead] sap
+/stopattack
+END
+VER 3 010000000000001F "b" "134400"
+/equipslot 17 Merciless Gladiator's Quickblade
+/equipslot 17 Gladiator's Shiv
+END
+VER 3 010000000000000D "B1" "134400"
+/cast [@arena1] Blind
+END
+VER 3 010000000000000E "B2" "134400"
+/cast [@arena2] Blind
+END
+VER 3 010000000000000F "B3" "134400"
+/cast [@arena3] Blind
+END
+VER 3 0100000000000018 "blindf" "134400"
+/cast [@focus] Blind
+END
+VER 3 0100000000000017 "evisc" "134400"
+#showtooltip cloak of shadows
+/cast eviscerate
+END
+VER 3 0100000000000007 "F1" "132292"
+/focus arena1
+END
+VER 3 0100000000000008 "F2" "132292"
+/focus arena2
+END
+VER 3 0100000000000009 "F3" "132292"
+/focus arena3
+END
+VER 3 0100000000000019 "fgouge" "134400"
+/cast [@focus] Gouge
+END
+VER 3 010000000000001D "focus" "134400"
+/focus [@mouseover,exists,nodead] mouseover; [@target,exists,nodead] target
+END
+VER 3 0100000000000014 "focuskick" "134400"
+/cast [@focus] Kick
+END
+VER 3 010000000000001C "FOOD !" "133971"
+#showtooltip
+/USE Conjured Manna Biscuit
+/USE CONJURED CROISSANT
+/USE Clefthoof Ribs
+/use Telaari Grapes
+END
+VER 3 010000000000001B "g" "134400"
+#showtooltip Deadly Throw
+/startattack
+/cast Hemorrhage
+END
+VER 3 0100000000000010 "Sap" "134400"
+/cast [@arena1] Sap
+END
+VER 3 0100000000000011 "Sap2" "134400"
+/cast [@arena2] Sap
+END
+VER 3 0100000000000012 "Sap3" "134400"
+/cast [@arena3] Sap
+END
+VER 3 0100000000000003 "ss" "134400"
+#showtooltip Sinister Strike
+/cast sinister strike
+/startattack
+END
+VER 3 010000000000000A "T1" "135428"
+/target arena1
+END
+VER 3 010000000000000B "T2" "135428"
+/target arena2
+END
+VER 3 010000000000000C "T3" "135428"
+/target arena3
+END
+VER 3 010000000000001E "vsc" "134400"
+/cast vanish
+/cast cheap shot
+END
+VER 3 0100000000000020 "xd" "134400"
+/use Major Shadow Protection Potion
+/use Master Healthstone
+END

@@ -1,0 +1,383 @@
+-- Huge thanks to Verz and Muleyo.
+-- Verz for helping with this in the past and many other things and
+-- Muleyo for helping me with questions and examples about the new aura systems in 12.1
+
+-- Auras Blizzard doesn't flag as CROWD_CONTROL
+local OTHER_CC = {
+    -- CC
+    [383005] = true,    -- Chrono Loop
+    -- Disarms
+    [207777] = true,    -- Dismantle (Rogue)
+    [236077] = true,    -- Disarm (Warrior)
+    [233759] = true,    -- Grapple Weapon (Monk)
+    [407032] = true,    -- Sticky Tar Bomb (Hunter)
+    [209749] = true,    -- Faerie Swarm (Druid)
+}
+
+-- Other auras that are nice to know.
+local OTHER_DEBUFFS = {
+    [41425] = true,     -- Hypothermia
+    [25771] = true,     -- Forbearance
+    [372048] = true,    -- Oppressing Roar
+    [212182] = true,    -- Smoke Bomb
+    [359053] = true,    -- Smoke Bomb
+    [121164] = true,    -- Orb of Power
+    [121175] = true,    -- Orb of Power
+    [121176] = true,    -- Orb of Power
+    [121177] = true,    -- Orb of Power
+    [77606] = true,     -- Dark Simulacrum
+    [356723] = true,    -- Scorpid Venom (90% slow with silence after)
+    [80240] = true,     -- Havoc
+}
+
+-- Auras Blizzard flags as CROWD_CONTROL that aren't CC
+local CC_BLACKLIST = {
+    [1280457] = true,   -- Mind Flay (Priest)
+}
+
+local TIERS = {
+    { key = "OtherDebuffs", filter = "HARMFUL", needsSpellIDs = true, candidateFilters = { includeSpellIDs = OTHER_DEBUFFS } },
+    { key = "ExtDef",       filter = "HELPFUL|EXTERNAL_DEFENSIVE" },
+    { key = "BigDef",       filter = "HELPFUL|BIG_DEFENSIVE" },
+    { key = "Important",    filter = "HELPFUL|IMPORTANT|!BIG_DEFENSIVE|!EXTERNAL_DEFENSIVE" },
+    { key = "OtherCC",      filter = "HARMFUL", needsSpellIDs = true, candidateFilters = { includeSpellIDs = OTHER_CC } },
+    { key = "CC",           filter = "HARMFUL|CROWD_CONTROL", candidateFilters = { excludeSpellIDs = CC_BLACKLIST } },
+}
+
+local SORT_METHOD = AuraContainerSortMethod.ExpirationOnly
+local SORT_DIRECTION = AuraContainerSortDirection.Reverse
+
+local SWIPE_TEXTURE = "Interface\\CHARACTERFRAME\\TempPortraitAlphaMask"
+local ALWAYS_ASSISTABLE = { player = true, pet = true }
+
+local OFF_FILTERS = { includeSpellIDs = {} }
+
+local hosts = {}
+local buildQueued = false
+local hostsEnabled = false
+local cooldowns = {}
+
+local TEXT_SIZE_BASE = 1.3
+local PREVIEW_DURATION = 8
+local PREVIEW_ICON = 136071
+local previewTicker
+
+local STRATA_BELOW = {
+    BACKGROUND = "BACKGROUND",
+    LOW = "BACKGROUND",
+    MEDIUM = "LOW",
+    HIGH = "MEDIUM",
+    DIALOG = "HIGH",
+    FULLSCREEN = "DIALOG",
+    FULLSCREEN_DIALOG = "FULLSCREEN",
+    TOOLTIP = "FULLSCREEN_DIALOG",
+}
+
+local function ApplyTimerStyle(cooldown)
+    local db = BetterBlizzFramesDB
+    local formatter = BBF.GetTimerFormatter(db.bigDebuffsLowColor or { 1, 0.1, 0.1, 1 }, db.bigDebuffsLowThreshold or 6, db.bigDebuffsMilliseconds, false, nil, db.bigDebuffsHighThreshold or 30, db.bigDebuffsHighColor or { 1, 1, 1, 1 })
+    cooldown:SetCountdownFormatter(formatter)
+    cooldown:SetHideCountdownNumbers(db.bigDebuffsHideTimer and true or false)
+    local text = cooldown:GetCountdownFontString()
+    if text then
+        local c = db.bigDebuffsBaseColor or { 1, 0.82, 0, 1 }
+        text:SetTextColor(c[1], c[2], c[3], c[4] or 1)
+        local base = cooldown.bbfBaseFont
+        if not base then
+            local font, size, flags = text:GetFont()
+            base = { font, size, flags }
+            cooldown.bbfBaseFont = base
+        end
+        if base[1] and base[2] then
+            text:SetFont(base[1], base[2] * TEXT_SIZE_BASE * (db.bigDebuffsTextScale or 1), base[3])
+        end
+    end
+end
+
+local function CreateCooldown(parent)
+    local cooldown = CreateFrame("Cooldown", nil, parent, "CooldownFrameTemplate")
+    cooldown:SetMinimumCountdownDuration(0)
+    cooldown:SetAllPoints(parent)
+    cooldown:SetUsingParentLevel(true)
+    cooldown:SetReverse(true)
+    cooldown:SetDrawBling(false)
+    cooldown:SetDrawEdge(false)
+    cooldown:SetSwipeTexture(SWIPE_TEXTURE)
+    ApplyTimerStyle(cooldown)
+    cooldowns[#cooldowns + 1] = cooldown
+    return cooldown
+end
+
+function BBF.UpdateBigDebuffsTimers()
+    for _, cooldown in ipairs(cooldowns) do
+        ApplyTimerStyle(cooldown)
+    end
+end
+
+local function InitIcon(host, button, level)
+    button:SetAllPoints(host.anchor)
+    button:SetFrameLevel(level)
+
+    local icon = button:CreateTexture(nil, "BACKGROUND")
+    icon:SetAllPoints(button)
+    icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+    if host.portraitMask then
+        icon:AddMaskTexture(host.portraitMask)
+    end
+    button:SetIcon(icon)
+
+    button:SetDurationCooldown(CreateCooldown(button))
+
+    button:EnableMouse(false)
+end
+
+local function CreateHost(unit, unitFrame, portrait, portraitMask)
+    if not portrait then return end
+
+    local portraitParent = portrait:GetParent()
+    local strata = STRATA_BELOW[portraitParent:GetFrameStrata()] or "BACKGROUND"
+
+    local portraitLayer = CreateFrame("Frame", nil, portraitParent)
+    portraitLayer:SetAllPoints(portraitParent)
+    portraitLayer:SetFrameStrata(strata)
+    portraitLayer:SetFrameLevel(0)
+
+    portrait:SetParent(portraitLayer)
+
+    local anchor = CreateFrame("Frame", nil, portraitLayer, BBF.AURA_ANCHOR_TEMPLATE)
+    anchor:SetAllPoints(portrait)
+    anchor:SetFrameStrata(strata)
+    anchor:SetFrameLevel(0)
+
+    local container = CreateFrame("AuraContainer", nil, anchor, "CustomAuraContainerTemplate")
+    container:SetAllPoints(anchor)
+    container:SetUnit(unit)
+    container:SetFrameStrata(strata)
+    container:SetFrameLevel(1)
+    container:SetEnabled(false)
+    container:Hide()
+
+    local host = {
+        unit = unit,
+        anchor = anchor,
+        portraitLayer = portraitLayer,
+        portraitMask = portraitMask,
+        container = container,
+        canToggleSlots = container.SetAuraSlotEnabled ~= nil,
+        tiers = {},
+        slotOn = {},
+    }
+
+    local base = container:GetFrameLevel()
+    for index, tier in ipairs(TIERS) do
+        if not (tier.needsSpellIDs and ALWAYS_ASSISTABLE[unit]) then
+            container:AddAuraSlot(tier.key, tier.filter, {
+                sortMethod = SORT_METHOD,
+                sortDirection = SORT_DIRECTION,
+                candidateFilters = tier.candidateFilters,
+                initializeFrame = function(button) InitIcon(host, button, base + index) end,
+            })
+            host.tiers[index] = tier
+            host.slotOn[index] = true
+        end
+    end
+
+    hosts[unit] = host
+    unitFrame.bbfBigDebuff = anchor
+end
+
+local function UpdateHostContainers(host)
+    local spellIDsUsable = BBF.CanFilterBySpellID(host.unit, false)
+    local tokensOk = BBF.AuraTokensReliable(host.unit)
+    local container = host.container
+    local changed, anyOn = false, false
+
+    for index, tier in pairs(host.tiers) do
+        local on = hostsEnabled and (not tier.needsSpellIDs or spellIDsUsable)
+            and (tokensOk or tier.needsSpellIDs) and true or false
+        if on then anyOn = true end
+        if host.slotOn[index] ~= on then
+            host.slotOn[index] = on
+            changed = true
+            if host.canToggleSlots then
+                container:SetAuraSlotEnabled(tier.key, on)
+            else
+                container:SetAuraSlotCandidateFilters(tier.key, on and tier.candidateFilters or OFF_FILTERS)
+            end
+        end
+    end
+
+    if host.shown ~= anyOn then
+        host.shown = anyOn
+        changed = true
+        container:SetEnabled(anyOn)
+        container:SetShown(anyOn)
+    end
+
+    return changed
+end
+
+local function SetHostsEnabled(enabled)
+    hostsEnabled = enabled
+
+    for _, host in pairs(hosts) do
+        UpdateHostContainers(host)
+    end
+end
+
+local function RefreshHost(unit, force)
+    local host = hosts[unit]
+    if not host then return end
+
+    local changed = UpdateHostContainers(host)
+    if (force or changed) and host.shown then
+        host.container:UpdateAllAuras()
+    end
+end
+
+local unitWatcher
+
+local function CreateUnitWatcher()
+    if unitWatcher then return end
+
+    unitWatcher = CreateFrame("Frame")
+    unitWatcher:RegisterEvent("PLAYER_TARGET_CHANGED")
+    unitWatcher:RegisterEvent("PLAYER_FOCUS_CHANGED")
+    unitWatcher:RegisterUnitEvent("UNIT_PET", "player")
+    unitWatcher:RegisterUnitEvent("UNIT_FACTION", "target", "focus")
+    unitWatcher:RegisterUnitEvent("UNIT_PHASE", "target", "focus")
+    unitWatcher:RegisterUnitEvent("UNIT_FLAGS", "target", "focus")
+    unitWatcher:RegisterUnitEvent("UNIT_CONNECTION", "target", "focus")
+    unitWatcher:RegisterEvent("PLAYER_ENTERING_WORLD")
+    unitWatcher:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+    unitWatcher:RegisterEvent("ZONE_CHANGED_INDOORS")
+    unitWatcher:SetScript("OnEvent", function(_, event, unit)
+        if event == "PLAYER_TARGET_CHANGED" then
+            RefreshHost("target", true)
+        elseif event == "PLAYER_FOCUS_CHANGED" then
+            RefreshHost("focus", true)
+        elseif event == "UNIT_PET" then
+            RefreshHost("pet", true)
+        elseif unit then
+            RefreshHost(unit, event == "UNIT_FACTION")
+        else
+            for hostUnit in pairs(hosts) do
+                RefreshHost(hostUnit, true)
+            end
+        end
+    end)
+end
+
+local function BuildHosts()
+    if next(hosts) then return true end
+    if InCombatLockdown() then return false end
+
+    if not BBF.HasNoPortrait("player") then
+        CreateHost("player", PlayerFrame,
+            PlayerFrame.PlayerFrameContainer.PlayerPortrait,
+            PlayerFrame.PlayerFrameContainer.PlayerPortraitMask)
+    end
+
+    if not BBF.HasNoPortrait("target") then
+        CreateHost("target", TargetFrame,
+            TargetFrame.TargetFrameContainer.Portrait,
+            TargetFrame.TargetFrameContainer.PortraitMask)
+    end
+
+    if not BBF.HasNoPortrait("focus") then
+        CreateHost("focus", FocusFrame,
+            FocusFrame.TargetFrameContainer.Portrait,
+            FocusFrame.TargetFrameContainer.PortraitMask)
+    end
+
+    if not BBF.HasNoPortrait("pet") then
+        CreateHost("pet", PetFrame,
+            PetPortrait,
+            PetFrame.PortraitMask)
+    end
+
+    CreateUnitWatcher()
+
+    return true
+end
+
+function BBF.CreateBigDebuffs()
+    if not BetterBlizzFramesDB.enableBigDebuffs then
+        SetHostsEnabled(false)
+        return
+    end
+
+    if C_AddOns.IsAddOnLoaded("MiniAuras") or C_AddOns.IsAddOnLoaded("MvqUI") then return end
+    if BBF.HasNoPortrait("player") and BBF.HasNoPortrait("target") and BBF.HasNoPortrait("focus") and BBF.HasNoPortrait("pet") then return end
+
+    if not BuildHosts() then
+        if not buildQueued then
+            buildQueued = true
+            local combatEnd = CreateFrame("Frame")
+            combatEnd:RegisterEvent("PLAYER_REGEN_ENABLED")
+            combatEnd:SetScript("OnEvent", function(self)
+                self:UnregisterAllEvents()
+                self:SetScript("OnEvent", nil)
+                buildQueued = false
+                BBF.CreateBigDebuffs()
+            end)
+        end
+        return
+    end
+
+    SetHostsEnabled(true)
+end
+
+local function RestartPreview()
+    local now = GetTime()
+    for _, host in pairs(hosts) do
+        if host.preview then
+            host.preview.cooldown:SetCooldown(now, PREVIEW_DURATION)
+        end
+    end
+end
+
+local function CreatePreview(host)
+    local preview = CreateFrame("Frame", nil, host.anchor)
+    preview:SetAllPoints(host.anchor)
+    preview:SetFrameStrata(host.container:GetFrameStrata())
+    preview:SetFrameLevel(host.container:GetFrameLevel() + #TIERS + 1)
+
+    local icon = preview:CreateTexture(nil, "BACKGROUND")
+    icon:SetAllPoints(preview)
+    icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+    icon:SetTexture(PREVIEW_ICON)
+    if host.portraitMask then
+        icon:AddMaskTexture(host.portraitMask)
+    end
+
+    preview.cooldown = CreateCooldown(preview)
+    preview:Hide()
+    host.preview = preview
+    return preview
+end
+
+function BBF.ToggleBigDebuffsPreview(show)
+    if previewTicker then
+        previewTicker:Cancel()
+        previewTicker = nil
+    end
+    if show and (not BetterBlizzFramesDB.enableBigDebuffs or not BuildHosts()) then
+        show = false
+    end
+    for _, host in pairs(hosts) do
+        local preview = host.preview or (show and CreatePreview(host))
+        if preview then
+            preview:SetShown(show)
+        end
+    end
+    if show then
+        RestartPreview()
+        previewTicker = C_Timer.NewTicker(PREVIEW_DURATION, RestartPreview)
+    end
+    return show
+end
+
+function BBF.IsBigDebuffsPreviewShown()
+    return previewTicker ~= nil
+end

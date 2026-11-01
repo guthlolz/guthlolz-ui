@@ -1,0 +1,272 @@
+VER 3 000000000000003F " " "134400"
+/cast [@focus] Deadly Throw
+END
+VER 3 0000000000000075 "18" "134400"
+/use 14
+END
+VER 3 0000000000000068 "b" "135381"
+/equipslot 17 Vengeful Gladiator's Quickblade
+/equipslot 17 Messenger of Fate
+END
+VER 3 0000000000000072 "bf" "134400"
+/cast blade flurry
+/use Bloodlust Brooch
+END
+VER 3 000000000000001A "CS" "134400"
+#showtooltip Cheap shot
+/cast [@arena1] Premeditation
+/cast [@arena1] Cheap shot
+END
+VER 3 000000000000001B "CS2" "134400"
+#showtooltip Cheap shot
+/cast [@arena2] Premeditation
+/cast [@arena2] Cheap shot
+END
+VER 3 000000000000001C "CS3" "134400"
+#showtooltip Cheap shot
+/cast [@arena3] Premeditation
+/cast [@arena3] Cheap shot
+END
+VER 3 0000000000000071 "curse" "134400"
+#showtooltip
+/cast [target=mouseover,exists] Remove Lesser Curse; Remove Lesser Curse
+END
+VER 3 0000000000000017 "evisc" "134400"
+#showtooltip 
+/cast eviscerate
+/startattack
+END
+VER 3 0000000000000039 "F1" "132108"
+/focus arena1
+END
+VER 3 000000000000003A "F2" "132108"
+/focus arena2
+END
+VER 3 000000000000003B "F3" "132108"
+/focus arena3
+END
+VER 3 0000000000000044 "feint" "132155"
+.playkit 823 0
+.playkit 3394
+/cast feint
+#showtooltip Gouge
+END
+VER 3 0000000000000062 "fff" "136033"
+/cast [@focus] Faerie Fire(Rank 1)
+END
+VER 3 0000000000000026 "Fkick" "134400"
+/cast [@focus] Kick
+END
+VER 3 0000000000000018 "flee" "132231"
+/cancelaura flee
+END
+VER 3 000000000000002D "fshiv" "134400"
+/cast [@focus] Shiv
+END
+VER 3 000000000000005C "garr" "INV_Misc_QuestionMark"
+#showtooltip Ghostly Strike
+/cast premeditation
+/cast garrote
+END
+VER 3 0000000000000051 "gggles" "134400"
+/use Hyper-Vision Goggles
+/cast perception
+END
+VER 3 0000000000000020 "Kick" "134400"
+#showtooltip
+/cast [@arena1] Kick
+END
+VER 3 0000000000000021 "Kick2" "134400"
+#showtooltip
+/cast [@arena2] Kick
+END
+VER 3 0000000000000022 "Kick3" "134400"
+#showtooltip
+/cast [@arena3] Kick
+END
+VER 3 000000000000005D "mind" "134400"
+/equipslot 17 Merciless Gladiator's Quickblade
+/equipslot 17 Gladiator's Bonecracker
+END
+VER 3 000000000000002B "Preme" "134400"
+#showtooltip Cloak of Shadows
+/cast premeditation
+END
+VER 3 000000000000006C "prep" "134400"
+#showtooltip Preparation
+/cast [nostealth] Evasion
+/cast sprint
+/cast preparation
+END
+VER 3 0000000000000038 "prospect" "134400"
+/cast prospecting
+/use adamantite ore
+END
+VER 3 0000000000000027 "rup" "134400"
+#showtooltip Preparation
+/cast rupture
+END
+VER 3 0000000000000045 "rupt" "INV_Misc_QuestionMark"
+#showtooltip 
+/cast rupture
+END
+VER 3 000000000000005E "RXPTargeting" "132150"
+/targetexact Felfire Diemetradon
+/targetexact Shadow Serpent
+/targetexact Vilewing Chimaera
+/targetexact Felboar
+/targetexact Scorchshell Pincer
+/targetlasttarget [dead]
+END
+VER 3 000000000000006D "RXPTargeting" "132150"
+/targetexact Felfire Diemetradon
+/targetexact Shadow Serpent
+/targetexact Vilewing Chimaera
+/targetexact Felboar
+/targetexact Scorchshell Pincer
+/targetlasttarget [dead]
+END
+VER 3 000000000000001D "SCS" "134400"
+#showtooltip Shadowstep
+/cast [@arena1] Shadowstep
+/cast [@arena1] Premeditation
+/cast [@arena1] Cheap shot
+END
+VER 3 000000000000001E "SCS2" "134400"
+#showtooltip Shadowstep
+/cast [@arena2] Shadowstep
+/cast [@arena2] Premeditation
+/cast [@arena2] Cheap shot
+END
+VER 3 000000000000001F "SCS3" "134400"
+#showtooltip Shadowstep
+/cast [@arena3] Shadowstep
+/cast [@arena3] Premeditation
+/cast [@arena3] Cheap shot
+END
+VER 3 0000000000000067 "shapeshift" "132122"
+/cast [stance:1] !Dire Bear Form
+/cast [stance:3] !Cat Form
+/cast [stance:4] !Travel Form
+/cast [stance:5] !Moonkin Form
+/cast [stance:5] !Tree of Life
+END
+VER 3 000000000000004D "shiv" "INV_Misc_QuestionMark"
+#showtooltip Blind
+/cast [stance:0] shiv
+/cast [stance:1] Cheap shot
+END
+VER 3 000000000000002A "shiv" "134400"
+#showtooltip Blind
+/cast [stance:0] shiv
+/startattack [nostealth]
+/cast [stance:1] Cheap shot
+END
+VER 3 0000000000000056 "shiv MC" "134400"
+/cast shiv
+/s Estou tirando seu MC %t
+END
+VER 3 000000000000003D "shivf" "134400"
+/cast [@foucs] Shiv
+END
+VER 3 0000000000000048 "skull" "134400"
+#show Skull of Impending Doom
+/castsequence reset=1 Skull of Impending Doom
+END
+VER 3 0000000000000029 "snd" "134400"
+#showtooltip Ghostly Strike
+/cast slice and dice
+END
+VER 3 000000000000000B "spam" "134400"
+/cleartarget
+/targetenemyplayer
+/cast [harm, nodead] sap
+/stopattack
+END
+VER 3 0000000000000009 "ss" "134400"
+#showtooltip 
+/startattack
+/cast Sinister strike
+END
+VER 3 0000000000000063 "SS" "INV_Misc_QuestionMark"
+#showtooltip Feral Charge
+/cast [stance:0/2/3] Dire Bear Form
+/cast [stance:1, @focus] Feral Charge
+END
+VER 3 0000000000000023 "Ssap" "134400"
+#showtooltip Shadowstep
+/cast [@arena1] Shadowstep
+/cast [@arena1] Sap
+END
+VER 3 0000000000000024 "Ssap2" "134400"
+#showtooltip Shadowstep
+/cast [@arena2] Shadowstep
+/cast [@arena2] Sap
+END
+VER 3 0000000000000025 "Ssap3" "134400"
+#showtooltip Shadowstep
+/cast [@arena3] Shadowstep
+/cast [@arena3] Sap
+END
+VER 3 0000000000000016 "stab" "134400"
+#showtooltip 
+/cast backstab
+END
+VER 3 0000000000000060 "stealth" "INV_Misc_QuestionMark"
+#showtooltip Stealth
+/stopattack
+/cast Stealth
+/sap
+END
+VER 3 000000000000004F "stealth" "134400"
+#showtooltip Stealth
+/stopattack
+/cast Stealth
+/cast sap
+END
+VER 3 000000000000003C "step" "134400"
+#showtooltip
+/cast [target=mouseover,exists] Shadowstep; Shadowstep
+END
+VER 3 0000000000000074 "step" "134400"
+#showtooltip
+/cast [target=mouseover,exists] Shadowstep; Shadowstep
+END
+VER 3 0000000000000073 "sw" "134400"
+.item 1 31027
+.item 3 31030
+.item 5 31028
+.item 6 32265
+.item 7 31029
+.item 8 32366
+.item 9 32324
+.item 10 31026
+.item 16 33762
+.item 17 33734
+.item 18 28581
+END
+VER 3 000000000000002E "T1" "135428"
+/target arena1
+END
+VER 3 000000000000002F "T2" "135428"
+/target arena2
+END
+VER 3 0000000000000031 "T3" "135428"
+/target arena3
+END
+VER 3 0000000000000040 "throwf" "134400"
+/cast [nomod] Throw
+/cast [mod:shift, @focus] Throw
+END
+VER 3 0000000000000033 "vsc" "132331"
+/cast vanish
+/cast cheap shot
+END
+VER 3 000000000000000D "x" "134400"
+#showtooltip Ambush
+/cast ambush
+END
+VER 3 0000000000000028 "xpoz" "134400"
+#showtooltip Sprint
+/cast Expose armor
+END

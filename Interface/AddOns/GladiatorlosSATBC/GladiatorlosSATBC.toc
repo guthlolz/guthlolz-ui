@@ -1,0 +1,14 @@
+## Interface: 20506
+## Title: GladiatorlosSA TBC
+## Notes: PvP Sound Alerter
+## Author: Dinobrutalityx
+## IconTexture: interface\icons\spell_misc_emotionangry.blp
+## SavedVariables: GladiatorlosSATBCDB
+## Version: 1.0
+
+
+embeds.xml
+Locales\locales.xml
+GladiatorlosSATBC.lua
+ClassicEra\spelllist_TBC.lua
+ClassicEra\options_TBC.lua

@@ -1,0 +1,46 @@
+## Interface: 11509, 20506, 30403, 40402, 50504, 120100, 120105
+## Version: 2026.10.4
+## Title: |cff1784d1Gears|r Equipment Manager
+## Notes: A lightweight World of Warcraft addon that lets players quickly save, manage, and switch between gear sets to adapt to different roles, specs, and gameplay situations with ease. |n|cff1784d1This addon is provided 'as is' without any warranties. All rights reserved. Redistribution or modification is not permitted.|r
+## Author: Antonio W. Lagnada (kapresoft@gmail.com)
+## IconTexture: Interface/AddOns/Gears/Assets/gears-logo-1
+
+## SavedVariables: GEARS_DB
+## SavedVariablesPerCharacter: GEARS_CHARACTER_DB
+
+## RequiredDeps: LibIconPicker
+## OptionalDeps: Ace3, LibHelpTour
+
+## Group: Gears
+## DefaultState: enabled
+
+## Category: Bags & Inventory
+## Category-enUS: Bags & Inventory
+## Category-deDE: Taschen & Inventar
+## Category-esES: Bolsas e inventario
+## Category-esMX: Bolsas e inventario
+## Category-frFR: Sacs et inventaire
+## Category-itIT: Borse e inventario
+## Category-koKR: 가방 및 소지품
+## Category-ptBR: Bolsas e inventário
+## Category-ruRU: Сумки и инвентарь
+## Category-zhCN: 背包与物品
+## Category-zhTW: 背包與物品
+
+## X-Credits: Antonio W. Lagnada (kapresoft@gmail.com)
+## X-License: All Rights Reserved. |cff1784d1This addon is provided 'as is' without any warranties. All rights reserved. Redistribution or modification is not permitted.|r
+
+## X-Github-Repo: https://github.com/kapresoft/wow-addon-gears
+## X-Github-Issues: https://github.com/kapresoft/wow-addon-gears/issues
+## X-CurseForge: https://www.curseforge.com/wow/addons/gears
+## X-Curse-Project-ID: 1421181
+## X-Github-Project-Author: Tony Lagnada
+## X-Github-Project-Hash: 21486d23e4bd22a6029ee26e0c8fe31ae5cab690
+## X-Github-Project-Last-Changed-Date: 2026-10-28T22:48:54Z
+## X-Github-Project-Version: 2026.10.4
+
+## X-PayPal-Donation-ID: AX58YP3GSGXVU
+## X-PayPal-Donation-URL: https://www.paypal.com/donate/?hosted_button_id=AX58YP3GSGXVU
+
+ThirdParty\ThirdParty.xml
+Gears.xml

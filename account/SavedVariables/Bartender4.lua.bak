@@ -1,0 +1,93 @@
+
+Bartender4DB = {
+["namespaces"] = {
+["ActionBars"] = {
+["profiles"] = {
+["Güth - Nightslayer"] = {
+["actionbars"] = {
+{
+["position"] = {
+["point"] = "BOTTOM",
+["y"] = 41.75,
+["x"] = -510,
+},
+["padding"] = 6,
+},
+{
+["enabled"] = false,
+},
+{
+["rows"] = 12,
+["position"] = {
+["point"] = "BOTTOMRIGHT",
+["y"] = 610,
+["x"] = -82,
+},
+["padding"] = 5,
+},
+{
+["rows"] = 12,
+["position"] = {
+["point"] = "BOTTOMRIGHT",
+["y"] = 610,
+["x"] = -42,
+},
+["padding"] = 5,
+},
+{
+["position"] = {
+["point"] = "BOTTOM",
+["y"] = 110,
+["x"] = 3,
+},
+["padding"] = 6,
+},
+{
+["position"] = {
+["point"] = "BOTTOM",
+["y"] = 110,
+["x"] = -510,
+},
+["padding"] = 6,
+},
+{
+},
+{
+},
+{
+},
+{
+},
+[13] = {
+},
+[15] = {
+},
+},
+},
+},
+},
+["BagBar"] = {
+["profiles"] = {
+["Güth - Nightslayer"] = {
+["position"] = {
+["point"] = "BOTTOM",
+["y"] = 42,
+["x"] = 295,
+},
+["verticalAlignment"] = "CENTER",
+["padding"] = 5,
+},
+},
+},
+},
+["profileKeys"] = {
+["Güth - Nightslayer"] = "Güth - Nightslayer",
+},
+["profiles"] = {
+["Güth - Nightslayer"] = {
+["focuscastmodifier"] = false,
+["blizzardVehicle"] = true,
+["outofrange"] = "hotkey",
+},
+},
+}

@@ -1,0 +1,158 @@
+# EnjoyLoseControl Changelog
+
+## 1.0.12
+
+### Changed
+- Moved the body of the "create sub-option frames" loop into a `CreateUnitOptionsPanel(v)`
+  function that the loop calls. The body declared around 85 locals, and inlined in a top level
+  loop those counted against Lua's limit of 200 local variables per function, which the main
+  chunk had almost reached: two more top level locals anywhere in the file and the addon would
+  have stopped loading with "too many local variables". Free local slots go from 2 to 71.
+- Collected the option widgets that `EnableInterfaceFrames` and `DisableInterfaceFrames` switch
+  on and off into one `Widgets` table instead of naming all 57 of them one at a time. Lua 5.1
+  allows 60 upvalues per function and both were at 57, so two more options would have stopped
+  the addon from compiling. They now hold 4 each.
+
+Neither change alters behaviour: the same ten panels are built in the same order, and both
+functions drive every widget in the same order with the same arguments as before.
+
+## 1.0.11
+
+### Fixed
+- Fixed the nameplate icons duplicating every crowd control effect for users of a nameplate
+  addon. Plater, Kui Nameplates, Threat Plates, TidyPlates and NeatPlates already draw the
+  aura on the plate themselves, so a Polymorph, Freezing Trap, Intimidation or Scare Beast
+  showed up twice on the same nameplate. When one of those addons is loaded the nameplate
+  icons now stay out of the way, and a one time message in the chat says so.
+
+### Added
+- Added a "Show nameplate icons even when a nameplate addon is loaded" option under
+  Options -> AddOns -> EnjoyLoseControl -> Nameplate, for anyone who wants both.
+- Added the loaded nameplate addon as an anchor of its own. The `BlizzardNameplatesUnitFrame`
+  anchor shows nothing while such an addon runs, since they hide Blizzard's unit frame on the
+  plate, so with both turned on the icon can now sit on the plate the addon actually draws.
+  It falls back to the plate itself whenever that frame is not available.
+
+## 1.0.10
+
+### Fixed
+- Fixed EnjoyLoseControl missing from Options -> AddOns on the first login. TBC 2.5.6 now rejects
+  non-64x64 textures passed to `SetPortraitToTexture`; the optional round debuff border used the
+  chat background texture there and aborted the rest of the addon file before any option panels
+  could be registered. The round border now uses a normal color texture with a separate mask.
+- Register the option panels after EnjoyLoseControl has finished loading, following Blizzard's
+  modern Settings API addon lifecycle. This keeps the parent and all eleven sub-panels together
+  on both a cold login and a UI reload.
+
+## 1.0.9
+
+### Fixed
+- Fixed the login error `EnjoyLoseControl.lua:6513: attempt to index upvalue 'LCframeplayer2'`.
+  ADDON_LOADED was registered above the code that creates the icon frames, so whenever anything
+  aborted the rest of the file the handler still ran and tried to initialize frames that did not
+  exist yet. The event is now registered after the frames are created, and the duplicate player
+  portrait is guarded in the handler.
+- Register the client dependent events (arena, focus, nameplate, group and CVAR events) defensively.
+  RegisterEvent raises a Lua error for an event the client does not know, which happened while the
+  addon file was still executing and stopped every icon frame from being created. This is what broke
+  the arena frames on Classic Era, where ARENA_OPPONENT_UPDATE and PLAYER_FOCUS_CHANGED do not exist.
+- Fixed EnjoyLoseControl not showing up under Options -> AddOns until a /reload was done. When the
+  Settings API was not usable yet at load time the option panels were queued, but the retry pass ran
+  backwards and only once per event, so the sub panels were always retried before their parent
+  category existed. The queue is now drained in order and keeps retrying while it makes progress.
+- Fixed the interrupt background textures never loading. They were still looked up under
+  `Interface\AddOns\LoseControl\Textures\`, which is the upstream folder name, instead of
+  `Interface\AddOns\EnjoyLoseControl\Textures\`.
+
+## 1.0.8
+
+### Added
+- Support for WoW Classic Era (patch 1.15.9). The addon now ships an additional
+  EnjoyLoseControl_Vanilla.toc, so the same download works on both the TBC Anniversary
+  client (2.5.6) and Classic Era. The TBC .toc is unchanged.
+
+### Fixed
+- Guard the talent lookups used for the interrupt duration reduction. They use TBC talent
+  tab/index coordinates and are now skipped on Classic Era instead of reading the wrong
+  talent, and a missing talent no longer causes a comparison against nil.
+
+### Known limitations on Classic Era
+- The arena1-arena5 frames still exist in the options but never show up, since Classic Era
+  has no arenas.
+- The interrupt duration reduction from Improved Concentration Aura is not applied on
+  Classic Era.
+
+## 1.0.7
+
+### Added
+- Added an optional colored border around the icon. It can be colored by debuff type
+  (magic, curse, disease, poison, everything else red, matching Blizzard's own debuff colors)
+  or by spell category (CC, Silence, Root, Snare, Interrupt, ...).
+- Added a border thickness slider. The border is off by default and is configured in the main options panel.
+
+## 1.0.6
+
+### Fixed
+- Fixed crowd control icons sometimes not appearing on party frames while the effect was already running.
+  An icon that got hidden or re-anchored (Blizzard's compact party frames re-assign their unit constantly)
+  was only redrawn when the aura itself changed, so a Sap, Fear or Garrote that was already active stayed invisible
+  for its whole duration.
+- Reset the drawn icon state when party/raid frames are unregistered, so a still running effect is redrawn
+  instead of staying hidden.
+- Force a redraw when the party anchor switches between the portrait and the Blizzard compact party frame.
+
+### Changed
+- `/elc debugparty` now also reports the icon parent state, the anchor visibility and the drawn expiration time.
+
+## 1.0.5
+
+### Fixed
+- Restored enemy-nameplate timers for root effects such as Mage Frost Nova and Druid Entangling Roots on TBC Anniversary 2.5.6.
+- Uses Blizzard's structured `C_UnitAuras` data path for aura scans, with a legacy fallback for older clients.
+
+## 1.0.4
+
+### Fixed
+- Fixed repeated blocked-action popups from Blizzard's `GetAllPrivateAuras()` during group changes and boss fights.
+- Removed insecure `OnAttributeChanged` hooks from Blizzard compact raid and party frames.
+- Refreshes compact-frame anchors through deferred secure post-hooks and keeps addon-owned frames outside Blizzard's protected frame hierarchy.
+
+## 1.0.3
+
+### Fixed
+- Fixed nameplate CC timers (including Mage Frost Nova) not refreshing after Blizzard's TBC Anniversary 2.5.6 pooled-nameplate update.
+- Rebinds UNIT_AURA when a nameplate unit is assigned and releases the binding when that recycled nameplate token is removed.
+
+## 1.0.2
+
+### Fixed
+- Updated nameplate handling for the pooled unit frames introduced in TBC Anniversary 2.5.6.
+- Prevented access to forbidden nameplate unit frames.
+- Kept addon-owned icons out of Blizzard's protected nameplate hierarchy to prevent blocked-action warnings in combat.
+- Removed addon state written directly onto Blizzard nameplate frames.
+
+## 1.0.1
+
+### Added
+- Added party and color debug slash commands to help diagnose Blizzard compact party frame and icon background issues.
+- Added extra `/elc debugparty` slot output for Blizzard compact party frames.
+
+### Fixed
+- Fixed Blizzard compact party frame detection and refresh handling on TBC Anniversary.
+- Fixed party debuff anchors for Blizzard raid-style and compact party frames in regular groups.
+- Fixed Blizzard raid-style party frame remapping in arena and compact party layouts when your character is not shown in the first visible slot.
+- Fixed party debuff icons showing on the wrong Blizzard compact party frame when Anniversary exposes party members through temporary `raidX` units.
+- Fixed color picker state handling causing random green interrupt backgrounds after repeated option changes until reload.
+
+## 1.0.0
+
+### Added
+- Added a TBC Anniversary-ready EnjoyLoseControl release.
+- Added an Info panel with support and CurseForge contact links.
+- Added cleaner slider visuals and select-to-copy link fields.
+- Added updated Anniversary options compatibility and improved arena anchor handling.
+
+### Fixed
+- Fixed the options panel opening on TBC Anniversary.
+- Fixed slider rendering issues in the config UI.
+- Fixed Info panel layout, button placement, and link selection behavior.

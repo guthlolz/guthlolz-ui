@@ -1,0 +1,259 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+    <Include file="Flyout\EquipmentSlotFlyout.xml"/>
+
+    <Script file="EquipmentSetDeleteButtonMixin.lua"/>
+    <Script file="EquipmentSetChangeButtonMixin.lua"/>
+    <Script file="EquipmentSetMixin.lua"/>
+    <Script file="MainFrame.lua"/>
+    <Script file="ToggleButtonMixin.lua"/>
+
+    <Font name="Gears_LabelFont" inherits="GameFontNormalOutline"
+          justifyH="LEFT" virtual="true">
+    </Font>
+
+    <CheckButton name="Gears_ToggleButtonTemplate" inherits="UICheckButtonTemplate"
+                 mixin="Gears_ToggleButtonMixin" registerForClicks="LeftButtonUp"
+                 frameLevel="10" hidden="true" virtual="true">
+        <Size x="36" y="36"/>
+        <Anchors>
+            <Anchor point="BOTTOMRIGHT" relativeTo="CharacterHandsSlot"
+                    relativePoint="TOPRIGHT" x="-2" y="2"/>
+        </Anchors>
+        <Scripts>
+            <OnLoad method="OnLoad"/>
+            <OnClick method="OnClick"/>
+            <OnEnter method="OnEnter"/>
+            <OnLeave method="OnLeave"/>
+        </Scripts>
+        <NormalTexture file="Interface\AddOns\Gears\Assets\ui-button-empty"/>
+        <PushedTexture file="Interface\AddOns\Gears\Assets\ui-button-empty" alpha="0.9" alphaMode="ADD"/>
+        <HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alpha="0.8" alphaMode="ADD"/>
+        <CheckedTexture file="Interface\Buttons\CheckButtonHilight" alpha="0.9" alphaMode="ADD" />
+    </CheckButton>
+
+    <Button name="Gears_DeleteButtonTemplate" inherits="IconButtonTemplate" hidden="true"
+            mixin="Gears_EquipmentSetDeleteButtonMixin" parentKey="DeleteButton"
+            registerForClicks="LeftButtonUp" virtual="true">
+        <KeyValues>
+            <KeyValue key="icon" value="Interface\AddOns\Gears\Assets\x-red"/>
+            <KeyValue key="iconSize" value="12" type="number"/>
+            <KeyValue key="iconWidth" value="12" type="number"/>
+            <KeyValue key="useIconAsHighlight" value="true" type="boolean"/>
+            <KeyValue key="tooltipText" value="DELETE" type="global"/>
+        </KeyValues>
+    </Button>
+
+    <Button name="Gears_ChangeButtonTemplate" inherits="IconButtonTemplate" hidden="true"
+            mixin="Gears_EquipmentSetChangeButtonMixin" parentKey="ChangeButton"
+            registerForClicks="LeftButtonUp" virtual="true">
+        <KeyValues>
+            <KeyValue key="icon" value="Interface\Buttons\UI-OptionsButton"/>
+            <KeyValue key="iconSize" value="13" type="number"/>
+            <KeyValue key="iconWidth" value="13" type="number"/>
+            <KeyValue key="useIconAsHighlight" value="true" type="boolean"/>
+            <KeyValue key="onClickSoundKit" value="SOUNDKIT.IG_MAINMENU_CONTINUE" type="global"/>
+            <KeyValue key="tooltipText" value="EQUIPMENT_SET_EDIT" type="global"/>
+        </KeyValues>
+    </Button>
+
+    <Button name="Gears_EquipmentSetTemplate" inherits="BackdropTemplate"
+           mixin="Gears_EquipmentSetMixin"
+            enableMouse="true" movable="true" registerForDrag="LeftButton"
+            frameLevel="10" virtual="true">
+        <Size y="48"/>
+
+        <Scripts>
+            <OnLoad method="OnLoad"/>
+            <OnEnter method="OnEnter"/>
+            <OnLeave method="OnLeave"/>
+            <OnMouseDown method="OnMouseDown"/>
+            <OnDoubleClick method="OnDoubleClick"/>
+            <OnDragStart method="OnDragStart"/>
+            <OnDragStop method="OnDragStop"/>
+            <OnReceiveDrag method="OnReceiveDrag"/>
+            <OnShow method="OnShow"/>
+            <OnHide method="OnHide"/>
+            <OnEvent method="OnEvent"/>
+        </Scripts>
+
+        <Anchors>
+            <Anchor point="TOPLEFT" x="5" />
+            <Anchor point="TOPRIGHT" x="-30" />
+        </Anchors>
+
+        <Frames>
+            <Button parentKey="IconButton" frameLevel="1"
+                    inherits="IconButtonTemplate">
+                <Size x="36" y="36"/>
+                <Anchors>
+                    <Anchor point="LEFT" x="8" y="0"/>
+                </Anchors>
+                <Layers>
+                    <Layer level="OVERLAY">
+                        <Texture parentKey="Checked" hidden="true" alphaMode="ADD"
+                                 file="Interface\Buttons\CheckButtonHilight">
+                            <Anchors>
+                                <Anchor point="TOPLEFT"/>
+                                <Anchor point="BOTTOMRIGHT"/>
+                            </Anchors>
+                        </Texture>
+                    </Layer>
+                </Layers>
+                <NormalTexture file="Interface\Icons\INV_Misc_QuestionMark"/>
+            </Button>
+        </Frames>
+
+        <Layers>
+            <Layer level="ARTWORK">
+                <FontString name="$parentLabel"
+                            parentKey="Label"
+                            text="DPS"
+                            inherits="Gears_LabelFont"
+                            wordwrap="false"
+                            justifyH="LEFT">
+                    <Anchors>
+                        <Anchor point="LEFT" x="50" y="0"/>
+                        <Anchor point="CENTER" y="0"/>
+                    </Anchors>
+                </FontString>
+                <Texture parentKey="CheckMark" alpha="0.9" hidden="true">
+                    <Size x="16" y="16"/>
+                    <Anchors>
+                        <Anchor point="RIGHT" x="-10" />
+                        <Anchor point="CENTER" y="0" />
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+    </Button>
+
+    <Frame name="Gears_MainFrameTemplate" virtual="true"
+           mixin="Gears_MainFrameMixin"
+           hidden="true" movable="true" enableMouse="true"
+           frameStrata="DIALOG" clampedToScreen="true">
+
+        <Scripts>
+            <OnLoad method="OnLoad"/>
+            <OnShow method="OnShow"/>
+            <OnEnter method="OnEnter"/>
+        </Scripts>
+
+        <Size x="200" y="427"/>
+
+        <Layers>
+            <Layer level="ARTWORK" textureSubLevel="1">
+                <Texture alpha="0.3" parentKey="BottomInsetEdge" atlas="_UI-Frame-DiamondMetal-EdgeTop" useAtlasSize="true" horizTile="true">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="6" y="-47"/>
+                        <Anchor point="TOPRIGHT" x="-4" y="-47"/>
+                    </Anchors>
+                </Texture>
+                <Texture parentKey="HeaderBG"
+                         file="Interface\FrameGeneral\UI-Background-Rock">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="5" y="-4"/>
+                        <Anchor point="TOPRIGHT" x="-4" y="-4"/>
+                    </Anchors>
+                    <Size y="54"/>
+                </Texture>
+                <FontString name="$parentDialogTitle" parentKey="HeaderTitle"
+                            inherits="GameFontNormal">
+                    <Size x="132" y="12"/>
+                    <Anchors>
+                        <Anchor point="TOP" relativePoint="TOP" x="0" y="-8" />
+                    </Anchors>
+                </FontString>
+                <Texture parentKey="HeaderIconLeft" alpha="0.3"
+                         file="Interface\AddOns\Gears\Assets\gears-button-2b" >
+                    <Size x="20" y="20"/>
+                    <Anchors>
+                        <Anchor point="RIGHT" relativeKey="$parent.HeaderTitle"
+                                relativePoint="CENTER" x="-20" y="0"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+
+        <!-- Scroll area for icons -->
+        <Frames>
+            <Frame parentKey="ButtonsContainerFrame">
+                <Size x="170" y="24"/>
+                <Anchors>
+                    <Anchor point="TOP" relativePoint="TOP" x="2" y="-26"/>
+                </Anchors>
+                <Frames>
+                    <Button parentKey="EquipButton" inherits="UIPanelButtonTemplate"
+                            registerForClicks="LeftButtonUp" text="EQUIPSET_EQUIP">
+                        <Size x="77" y="24"/>
+                        <Anchors>
+                            <Anchor point="LEFT" x="0" y="0"/>
+                        </Anchors>
+                        <Scripts>
+                            <OnClick>
+                                self.owner:OnClick_EquipButton(self, button);
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                    <Button parentKey="SaveButton" inherits="UIPanelButtonTemplate"
+                            registerForClicks="LeftButtonUp" text="SAVE">
+                        <Size x="77" y="24"/>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeKey="$parent.EquipButton"
+                                    relativePoint="RIGHT"
+                                    x="0" y="0"/>
+                        </Anchors>
+                        <Scripts>
+                            <OnClick>
+                                self.owner:OnClick_SaveButton(self, button);
+                            </OnClick>
+                        </Scripts>
+                    </Button>
+                    <Button parentKey="AddButton" inherits="IconButtonTemplate"
+                            mixin="Gears_AddButtonMixin"
+                            registerForClicks="LeftButtonUp">
+                        <KeyValues>
+                            <KeyValue key="icon" value="interface/paperdollinfoframe/character-plus"/>
+                            <KeyValue key="iconSize" value="14" type="number"/>
+                            <KeyValue key="useIconAsHighlight" value="true" type="boolean"/>
+                        </KeyValues>
+                        <Anchors>
+                            <Anchor point="LEFT" relativeKey="$parent.SaveButton" relativePoint="RIGHT"
+                                    x="-1" y="0"/>
+                        </Anchors>
+                    </Button>
+                </Frames>
+            </Frame>
+            <ScrollFrame parentKey="ScrollFrame"
+                         inherits="UIPanelScrollFrameTemplate">
+                <Size x="190" y="330"/>
+                <Anchors>
+                    <Anchor point="TOP" relativeKey="$parent.ButtonsContainerFrame"
+                            relativePoint="BOTTOM" y="-12" />
+                    <Anchor point="LEFT" x="5"/>
+                    <Anchor point="RIGHT" x="-34"/>
+                    <Anchor point="BOTTOM" y="8"/>
+                </Anchors>
+
+                <Frames>
+                    <!-- THIS is what scrolls -->
+                    <Frame parentKey="ScrollChild" >
+                        <Size x="190" y="330"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT"/>
+                            <Anchor point="TOPRIGHT"/>
+                        </Anchors>
+                        <Frames>
+                        </Frames>
+                    </Frame>
+                </Frames>
+            </ScrollFrame>
+        </Frames>
+    </Frame>
+
+    <Frame name="Gears_MainFrame" hidden="true" movable="true" enableMouse="true"
+           inherits="BackdropTemplate, Gears_MainFrameTemplate">
+    </Frame>
+    <CheckButton name="Gears_ToggleButton" inherits="Gears_ToggleButtonTemplate"/>
+</Ui>

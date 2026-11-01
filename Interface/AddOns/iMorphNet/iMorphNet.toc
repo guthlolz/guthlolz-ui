@@ -1,0 +1,8 @@
+## Interface: 120100, 50504, 38002, 30404, 20506, 16001, 11509
+## Version: 1.0.1
+## Title: iMorphNet
+## IconTexture: interface/icons/inv_misc_weathermachine_01.blp
+## Notes: convert dot commands to iMorphNet commands
+## Author: darklinux @ ownedcore
+
+iMorphNet.lua

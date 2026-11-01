@@ -1,0 +1,262 @@
+-- API adjusted functions to let calling code stay version agnostic.
+local _, ArenaAnalytics = ...; -- Addon Namespace
+local API = ArenaAnalytics.API;
+
+ArenaAnalytics.isTBC = true;
+
+-- Local module aliases
+local Helpers = ArenaAnalytics.Helpers;
+local Localization = ArenaAnalytics.Localization;
+local Internal = ArenaAnalytics.Internal;
+local Bitmap = ArenaAnalytics.Bitmap;
+local Debug = ArenaAnalytics.Debug;
+
+-------------------------------------------------------------------------
+
+API.defaultButtonTemplate = "UIPanelButtonTemplate"; --"UIServiceButtonTemplate";
+API.legacySpecs = true;
+--API.enableInspection = true;  -- @TODO: Find a way to inspect specialization in TBC
+
+
+API.availableBrackets = {
+	{ name = "2v2", key = 1},
+	{ name = "3v3", key = 2},
+	{ name = "5v5", key = 3},
+};
+
+
+API.availableMaps = {
+    "BladesEdgeArena",
+    "NagrandArena",
+    "RuinsOfLordaeron",
+};
+
+
+function API:IsRatedArena()
+    return API:IsInArena() and C_PvP.IsRatedMap() and not API:IsWargame() and not API:IsSkirmish();
+end
+
+
+function API:GetBattlefieldStatus(battlefieldId)
+    if(not battlefieldId) then
+        Debug:LogError("API:GetBattlefieldStatus called with invalid battlefieldId.");
+        return nil;
+    end
+
+    local status, _, _, _, _, teamSize, isRated = GetBattlefieldStatus(battlefieldId);
+
+    local bracket = API:DetermineBracket(teamSize);
+    local matchType = API:DetermineMatchType();
+
+    return status, bracket, teamSize, matchType;
+end
+
+
+function API:GetPersonalRatedInfo(bracketIndex)
+    bracketIndex = tonumber(bracketIndex);
+    if(not bracketIndex) then
+        return nil;
+    end
+
+    -- Solo Shuffle
+    if(bracketIndex == 4) then
+        return nil; -- NYI
+    end
+
+    local rating,_,_,seasonPlayed = GetPersonalRatedInfo(bracketIndex);
+    return tonumber(rating), tonumber(seasonPlayed);
+end
+
+
+function API:GetPlayerScore(index)
+    local name, kills, _, deaths, _, teamIndex, _, race, _, classToken, damage, healing, ratingChange, preMatchMMR = GetBattlefieldScore(index);
+    name = API:ToFullName(name);
+
+    -- Convert values
+    local race_id = Localization:GetRaceID(race);
+    local class_id = Internal:GetAddonClassID(classToken);
+
+    local score = {
+        name = name,
+        race = race_id,
+        spec = class_id,
+        team = teamIndex,
+        kills = tonumber(kills),
+        deaths = tonumber(deaths),
+        damage = tonumber(damage),
+        healing = tonumber(healing),
+    };
+
+    if(API:IsRatedArena()) then
+        -- score.rating = tonumber(bgRating); -- Not available?
+        -- score.ratingDelta = tonumber(ratingChange); -- Not relevant without rating?
+        score.mmr = tonumber(preMatchMMR);
+        -- score.mmrDelta = tonumber(mmrChange); -- Not available?
+    end
+
+    return score;
+end
+
+
+local function getPointsSpent(index, isInspect)
+    if(isInspect) then
+        local id, name, _, _, pointsSpent = GetTalentTabInfo(index, true);
+        return tonumber(id), tonumber(pointsSpent), name;
+    end
+
+    local id, name, _, _, pointsSpent = GetTalentTabInfo(index);
+    return tonumber(id), tonumber(pointsSpent), name;
+end
+
+
+local function checkPlausiblePreg(spec_id, pointsSpent)
+    if(pointsSpent > 45) then
+        return false; -- No spec has more than 45 points for Preg.
+    elseif(spec_id == 11) then -- Holy
+        if(pointsSpent > 10) then -- Max 10 holy points for preg (0 is expected)
+            return false;
+        end
+    elseif(spec_id == 12) then -- Protection
+        if(pointsSpent < 15 or pointsSpent > 30) then -- Max 30 protection points for preg (28 expected)
+            return false;
+        end
+    elseif(spec_id == 14) then -- Retribution
+        if(pointsSpent < 15 or pointsSpent > 45) then -- Max 45 retribution points for preg (43 expected)
+            return false;
+        end
+    end
+
+    -- No change to plausibility proven
+    return true;
+end
+
+
+-- Get local player current spec
+function API:GetSpecialization(unitToken, explicit)
+    if(explicit and not unitToken) then
+        return nil;
+    end
+
+    unitToken = unitToken or "player";
+    if(not UnitExists(unitToken)) then
+        return nil;
+    end
+
+    local isInspect = not API:IsSelf(unitToken);
+
+    local spec, currentSpecPoints = nil, 0;
+    local isPlausiblePreg = true;
+
+    -- Determine spec
+    local _,classToken = UnitClass(unitToken);
+    if(not classToken) then
+        Debug:LogWarning("API:GetSpecialization failed to retrieve class token:", API:GetUnitFullName(unitToken), unitToken);
+        return nil;
+    end
+
+    if(classToken ~= "PALADIN") then
+        -- Not paladin, cannot be preg.
+        isPlausiblePreg = false;
+    end
+
+    for i = 1, 3 do
+        local id, pointsSpent = getPointsSpent(i, isInspect);
+
+		if (id and pointsSpent) then
+            local spec_id = API:GetMappedAddonSpecID(id);
+            if(not spec_id) then
+                Debug:LogError("API:GetSpecialization failed to retrieve internal spec ID for:", id, classToken, i);
+            end
+
+            -- Update plausible preg flag
+            isPlausiblePreg = isPlausiblePreg and checkPlausiblePreg(spec_id, pointsSpent);
+
+            if(pointsSpent > currentSpecPoints) then
+                currentSpecPoints = pointsSpent;
+                spec = spec_id;
+            end
+        end
+ 	end
+
+    if(spec and isPlausiblePreg) then
+        spec = 13;
+    end
+
+    return spec;
+end
+
+API.maxRaceID = 70;
+
+
+-- Internal Addon Spec ID to expansion spec IDs
+API.specMappingTable = {
+    [282] = 1, -- Restoration Druid
+    [281] = 2, -- Feral Druid
+    [283] = 3, -- Balance Druid
+
+    [382] = 11, -- Holy Paladin
+    [383] = 12, -- Protection Paladin
+    [381] = 14, -- Retribution Paladin
+
+    [262] = 21, -- Restoration Shaman
+    [261] = 22, -- Elemental Shaman
+    [263] = 23, -- Enhancement Shaman
+
+    [400] = 31, -- Unholy Death Knight
+    [399] = 32, -- Frost Death Knight
+    [398] = 33, -- Blood Death Knight
+
+    [361] = 41, -- Beast Mastery Hunter
+    [363] = 42, -- Marksmanship Hunter
+    [362] = 43, -- Survival Hunter
+
+    [61] = 51, -- Frost Mage
+    [41] = 52, -- Fire Mage
+    [81] = 53, -- Arcane Mage
+
+    [183] = 61, -- Subtlety Rogue
+    [182] = 62, -- Assassination Rogue
+    [181] = 63, -- Combat Rogue
+
+    [302] = 71, -- Affliction Warlock
+    [301] = 72, -- Destruction Warlock
+    [303] = 73, -- Demonology Warlock
+
+    [163] = 81, -- Protection Warrior
+    [161] = 82, -- Arms Warrior
+    [164] = 83, -- Fury Warrior
+
+    [201] = 91, -- Discipline Priest
+    [202] = 92, -- Holy Priest
+    [203] = 93, -- Shadow Priest
+};
+
+
+-------------------------------------------------------------------------
+-- Overrides
+
+API.roleBitmapOverrides = nil;
+local function InitializeRoleBitmapOverrides()
+    API.roleBitmapOverrides = {
+        [43] = Bitmap.roles.ranged_damager, -- Survival hunter
+    };
+end
+
+API.specIconOverrides = nil;
+local function InitializeSpecOverrides()
+    API.specIconOverrides = {
+        -- Warrior
+        [82] = [[Interface\Icons\ability_warrior_savageblow]], -- Arms
+
+        -- Priest
+        [91] = [[Interface\Icons\spell_holy_powerwordshield]], -- Discipline
+    };
+end
+
+-------------------------------------------------------------------------
+-- Expansion API initializer
+
+function API:InitializeExpansion()
+    InitializeRoleBitmapOverrides();
+    InitializeSpecOverrides();
+end

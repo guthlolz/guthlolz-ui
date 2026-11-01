@@ -1,0 +1,12 @@
+## Interface: 120000,120001,120005,120007,120100,120105
+## Title: TooltipID ItemID by |cFF7C02A8OverCraft|r
+## Notes: Show the ID of the item, spell etc.. on the tooltip
+## Author: OverCraft
+## Version: 0.1.23
+## SavedVariables: TooltipID_GlobalSettings
+
+locale\enEN.lua
+locale\esES.lua
+Options.lua
+RetailTooltip.lua
+Loader.lua

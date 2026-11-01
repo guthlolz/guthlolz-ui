@@ -1,0 +1,14 @@
+## Interface: 20506
+## Version: 270
+## X-Curse-Project-ID: 414434
+## Title: Attune
+## Author: CixiDelmont
+## Notes: Track your Attunement progression
+## SavedVariables: Attune_DB
+## SavedVariablesPerCharacter: AttuneLastViewed, TreeExpandStatus
+## IconTexture: Interface\Icons\inv_scroll_03
+## Category: Attunements
+embeds.xml
+Locales\Locales.xml
+Attune.lua
+AttuneData.lua

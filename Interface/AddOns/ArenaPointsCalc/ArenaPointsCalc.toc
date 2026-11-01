@@ -1,0 +1,8 @@
+## Interface: 20505
+## Title: |cffF0C060Arena Points Calculator|r
+## Notes: TBC Anniversary Season 1 - Arena Points Calculator integrated into the PvP tab
+## Author: Doomtroll
+## Version: 1.0.7
+## SavedVariables: ArenaPointsCalcDB
+
+ArenaPointsCalc.lua

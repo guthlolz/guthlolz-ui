@@ -1,0 +1,2 @@
+
+GEARS_CHARACTER_DB = nil

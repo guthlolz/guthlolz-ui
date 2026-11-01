@@ -1,0 +1,20 @@
+## Interface: 20506
+## X-Min-Interface: 90200
+## X-Min-Interface-Classic: 11402
+## X-Min-Interface-BCC: 20503
+## Title: TBCA_BIS
+## Version: v5.0
+## Author: Unforvegan [H] DreamScythe
+## SavedVariables: Unforvegan_BISDB, TBCA_BIS_TrackerDB
+## OptionalDeps: AtlasLootClassic_DungeonsAndRaids
+## X-License: All Rights Reserved
+Libraries\Libraries.xml
+Unforvegan.lua
+
+Data\BiSData.lua
+Data\DropRates.lua
+Data\TalentData.lua
+Unforvegan_BIS.lua
+tracker.lua
+inspect_score.lua
+talent_viewer.lua

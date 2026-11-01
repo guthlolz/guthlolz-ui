@@ -1,0 +1,41 @@
+## Interface: 11509, 20506, 30403, 40402, 50504, 120100, 120105
+## Version: 2026.10.4
+## Title: Lib|cff12E600IconPicker|r
+## IconTexture: Interface/Addons/LibIconPicker/Libs/Assets/LibIconPicker-Logo-1
+
+## Author: Tony Lagnada (kapresoft)
+## Notes: LibIconPicker is a reusable World of Warcraft addon library that provides|na flexible and efficient icon chooser dialog for addon developers.|n|cff1784d1This addon is provided 'as is' without any warranties.All rights|nreserved. Redistribution or modification is not permitted.|r
+
+## DefaultState: enabled
+## LoadOnDemand: 1
+## SavedVariables: LibIconPicker_HelpTips, LibIconPicker_IconHistory
+## OptionalDeps: LibHelpTour
+
+## Category-enUS: Libraries
+## Category-deDE: Bibliotheken
+## Category-esES: Bibliotecas
+## Category-esMX: Bibliotecas
+## Category-frFR: Bibliothèques
+## Category-itIT: Librerie
+## Category-koKR: 라이브러리
+## Category-ptBR: Bibliotecas
+## Category-ruRU: Библиотеки
+## Category-zhCN: 库
+## Category-zhTW: 程式庫
+
+## X-Github-Repo: https://github.com/kapresoft/wow-addon-LibIconPicker
+## X-Github-Issues: https://github.com/kapresoft/wow-addon-LibIconPicker/issues
+## X-CurseForge: https://www.curseforge.com/wow/addons/libiconpicker
+## X-Curse-Project-ID: 1404138
+## X-Github-Project-Author: Tony Lagnada
+## X-Github-Project-Hash: 07853f3352866cc476fc872ac7d9cc86515cd117
+## X-Github-Project-Last-Changed-Date: 2026-10-26T21:51:51Z
+## X-Github-Project-Version: 2026.10.4
+
+## X-WoWI-ID: -1
+
+## X-PayPal-Donation-ID: AX58YP3GSGXVU
+## X-PayPal-Donation-URL: https://www.paypal.com/donate/?hosted_button_id=AX58YP3GSGXVU
+
+ThirdParty\ThirdParty.xml
+LibIconPicker.xml

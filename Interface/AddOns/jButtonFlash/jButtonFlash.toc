@@ -1,0 +1,7 @@
+## Interface: 20505
+## Title: jButtonFlash (EnjoyMyGripz Edition)
+## Notes: Adds a flash animation to pressed action buttons.
+## Author: Meltdowntek-Spineshatter
+## Version: 2.1.2-TBC
+## SavedVariables: jButtonFlashDB
+jButtonFlash.lua

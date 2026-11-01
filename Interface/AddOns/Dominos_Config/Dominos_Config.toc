@@ -1,0 +1,30 @@
+## Interface: 120107, 120105, 50504, 20506, 16001, 11509
+## Title: Dominos Config
+## Title-zhCN: Dominos 设置
+## Title-zhTW: Dominos 設置
+## Notes: GUI based configuration for Dominos
+## Notes-zhCN: Dominos 图形设置界面
+## Author: Tuller
+## Dependencies: Dominos
+## LoadOnDemand: 1
+## IconTexture: Interface/AddOns/Dominos/Dominos
+embeds.xml
+localization\default.lua
+localization\[TextLocale].lua
+main.lua
+contextMenu\registry.lua
+contextMenu\controlPool.lua
+contextMenu\scrollableContainer.lua
+contextMenu\panelSelector.lua
+contextMenu\controls\check.lua
+contextMenu\controls\slider.lua
+contextMenu\controls\dropdown.lua
+contextMenu\controls\text.lua
+contextMenu\controls\header.lua
+contextMenu\panelControls.lua
+contextMenu\menu.lua
+options\general.lua
+options\profiles.lua
+overlay\ui.lua
+overlay\dragFrame.lua
+overlay\help.lua

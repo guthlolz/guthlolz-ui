@@ -1,0 +1,249 @@
+--[[
+
+	This file is part of 'Masque', an add-on for World of Warcraft. For bug reports,
+	suggestions and license information, please visit https://github.com/SFX-WoW/Masque.
+
+	* File...: Skins\Maul_Classic.lua
+	* Author.: StormFX, Maul, Blizzard Entertainment
+
+	"Classic Enhanced" Skin
+
+]]
+
+local _, Core = ...
+
+----------------------------------------
+-- Internal
+---
+
+-- @ Locales\enUS
+local L = Core.Locale
+
+----------------------------------------
+-- Classic Enhanced
+---
+
+Core.AddSkin("Classic Enhanced", {
+	-- API_VERSION = Template.API_VERSION,
+	Shape = "Modern",
+	Template = "Blizzard Classic",
+
+	-- Info
+	Authors = {"StormFX", "|cff999999Maul|r", "|cff999999Blizzard Entertainment|r"},
+	Description = L["A modified version of the classic button style."],
+	Discord = Core.Discord,
+	-- Version = Template.Version,
+	Websites = Core.Websites,
+
+	-- Skin
+	-- Mask = Template.Mask,
+	Backdrop = {
+		Texture = [[Interface\Buttons\UI-Quickslot]],
+		Color = {1, 1, 1, 0.8},
+		Width = 64,
+		Height = 64,
+		BagSlot = {
+			Texture = [[Interface\PaperDoll\UI-PaperDoll-Slot-Bag]],
+			Color = {1, 1, 1, 0.8},
+		},
+		Item = {
+			Texture = [[Interface\PaperDoll\UI-PaperDoll-Slot-Bag]],
+			Color = {1, 1, 1, 0.5},
+		},
+	},
+	Icon = {
+		TexCoords = {0.07, 0.93, 0.07, 0.93},
+		Width = 32,
+		Height = 32,
+	},
+	-- Shadow = Template.Shadow,
+	Normal = {
+		Texture = [[Interface\Buttons\UI-Quickslot2]],
+		EmptyColor = {1, 1, 1, 0.5},
+		Width = 60,
+		Height = 60,
+		OffsetX = 0.5,
+		OffsetY = -0.5,
+		Pet = {
+			Texture = [[Interface\Buttons\UI-Quickslot2]],
+			Width = 58,
+			Height = 58,
+			OffsetX = 0.5,
+			OffsetY = -0.5,
+		},
+	},
+	-- Disabled = Template.Disabled,
+	Pushed = {
+		Texture = [[Interface\Buttons\UI-Quickslot-Depress]],
+		DrawLevel = 1,
+	},
+	Flash = {
+		Texture = [[Interface\Buttons\UI-QuickslotRed]],
+		Color = {1, 1, 1, 0.75},
+		Width = 34,
+		Height = 34,
+	},
+	Checked = {
+		Texture = [[Interface\Buttons\CheckButtonHilight]],
+		Color = {1, 1, 1, 0.8},
+		BlendMode = "ADD",
+		Width = 33,
+		Height = 33,
+		Pet = {
+			Texture = [[Interface\Buttons\CheckButtonHilight]],
+			Color = {1, 1, 1, 0.8},
+			BlendMode = "ADD",
+			Width = 32,
+			Height = 32,
+		},
+	},
+	SlotHighlight = {
+		Texture = [[Interface\Buttons\CheckButtonHilight]],
+		Width = 33,
+		Height = 33,
+	},
+	Border = {
+		Texture = [[Interface\Buttons\UI-ActionButton-Border]],
+		BlendMode = "ADD",
+		Width = 57,
+		Height = 57,
+		OffsetX = 0.5,
+		OffsetY = 0.5,
+		Debuff = {
+			Texture = [[Interface\Buttons\UI-Debuff-Overlays]],
+			TexCoords = {0.296875, 0.5703125, 0, 0.515625},
+			Width = 40,
+			Height = 38,
+			OffsetY = 1,
+		},
+		Enchant = {
+			Texture = [[Interface\Buttons\UI-TempEnchant-Border]],
+			Width = 40,
+			Height = 40,
+		},
+	},
+	DebuffBorder = {
+		Texture = [[Interface\Buttons\UI-Debuff-Overlays]],
+		TexCoords = {0.296875, 0.5703125, 0, 0.515625},
+		Width = 40,
+		Height = 38,
+		OffsetY = 1,
+	},
+	EnchantBorder = {
+		Texture = [[Interface\Buttons\UI-TempEnchant-Border]],
+		Width = 40,
+		Height = 40,
+	},
+	-- IconBorder = Template.IconBorder,
+	-- Gloss = Template.Gloss,
+	-- NewAction = Template.NewAction,
+	-- SpellHighlight = Template.SpellHighlight,
+	-- IconOverlay = Template.IconOverlay,
+	-- IconOverlay2 = Template.IconOverlay2,
+	NewItem = {
+		Atlas = "bags-newitem",
+		BlendMode = "ADD",
+	},
+	QuestBorder = {
+		Border = [[Interface\ContainerFrame\UI-Icon-QuestBang]],
+		Texture = [[Interface\ContainerFrame\UI-Icon-QuestBorder]],
+		Width = 32,
+		Height = 32,
+	},
+	UpgradeIcon = {
+		Atlas = "bags-greenarrow",
+		UseAtlasSize = true,
+		OffsetX = 1,
+		OffsetY = -1,
+	},
+	-- ContextOverlay = Template.ContextOverlay,
+	-- SearchOverlay = Template.SearchOverlay,
+	JunkIcon = {
+		Atlas = "bags-junkcoin",
+		UseAtlasSize = true,
+		OffsetX = 1,
+	},
+	-- Duration = Template.Duration,
+	-- Name = Template.Name,
+	Highlight = {
+		Texture = [[Interface\Buttons\ButtonHilight-Square]],
+		Width = 32,
+		Height = 32,
+	},
+	-- [ TextOverlayContainer (Retail) ]
+	-- Count = Template.Count,
+	-- HotKey = Template.HotKey,
+	-- [ AutoCastOverlay ]
+	AutoCast_Frame = {
+		Width = 37,
+		Height = 37,
+		-- Point = "CENTER",
+		-- RelPoint = "CENTER",
+		-- OffsetX = 0,
+		-- OffsetY = 0,
+		-- SetAllPoints = nil,
+		Classic = {
+			Width = 28,
+			Height = 28,
+			-- Point = "CENTER",
+			-- RelPoint = "CENTER",
+			OffsetX = 0.5,
+			OffsetY = -0.5,
+			-- SetAllPoints = nil,
+		},
+	},
+	-- AutoCast_Shine = Template.AutoCast_Shine,
+	AutoCast_Mask = {
+		Texture = [[Interface\AddOns\Masque\Textures\Modern\AutoCast-Mask]],
+		Width = 28,
+		Height = 28,
+	},
+	AutoCast_Corners = {
+		Atlas = "UI-HUD-ActionBar-PetAutoCast-Corners",
+		Width = 36,
+		Height = 36,
+		Classic = {
+			Atlas = "UI-HUD-ActionBar-PetAutoCast-Corners",
+			Width = 64,
+			Height = 64,
+			-- OffsetX = 0,
+			-- OffsetY = 0,
+		},
+	},
+	-- [ Cooldowns ]
+	Cooldown = {
+		Texture = [[Interface\AddOns\Masque\Textures\Modern\Mask]],
+		EdgeTexture = [[Interface\AddOns\Masque\Textures\Modern\Edge]],
+		PulseTexture = [[Interface\Cooldown\star4]],
+		Color = {0, 0, 0, 0.8},
+		Width = 32,
+		Height = 32,
+	},
+	CooldownLoC = "Cooldown",
+	ChargeCooldown = "Cooldown",
+	-- [ SpellAlerts ]
+	SpellAlert = {
+		Height = 40,
+		Width = 40,
+		AltGlow = {
+			Height = 46.5,
+			Width = 46.5,
+		},
+		Classic = {
+			Height = 32,
+			Width = 32,
+		},
+		Modern = {
+			Height = 32,
+			Width = 32,
+		},
+		["Modern-Lite"] = {
+			Height = 33,
+			Width = 33,
+		},
+	},
+	AssistedCombatHighlight = {
+		Width = 46.5,
+		Height = 46.5,
+	},
+}, true)

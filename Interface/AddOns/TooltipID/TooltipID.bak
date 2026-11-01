@@ -1,0 +1,13 @@
+## Interface: 11507,20504,30404,40402,50500,110105,110107
+## Title: TooltipID ItemID by |cFF7C02A8OverCraft|r
+## Notes: Show the ID of the item, spell etc.. on the tooltip
+## Author: OverCraft
+## Version: 0.1.11
+
+# Classic versions
+ClassicTooltip.lua [AllowLoadGameType classic, vanilla]
+
+# Retail - siempre cargar último retail para sobreescribir la funcion init por si acaso
+RetailTooltip.lua [AllowLoadGameType mainline, standart, cata, mists]
+
+Loader.lua

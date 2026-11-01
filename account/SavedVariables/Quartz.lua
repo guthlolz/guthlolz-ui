@@ -1,0 +1,88 @@
+
+Quartz3DB = {
+["namespaces"] = {
+["Pet"] = {
+["profiles"] = {
+["Default"] = {
+["y"] = 172.8370666503906,
+["point"] = "BOTTOM",
+["texture"] = "Asuri",
+["x"] = 3.88458251953125,
+},
+},
+},
+["Player"] = {
+["profiles"] = {
+["Default"] = {
+["y"] = 198,
+["point"] = "BOTTOM",
+["border"] = "None",
+["hidenametext"] = true,
+["texture"] = "Asuri",
+["x"] = 0,
+},
+},
+},
+["Focus"] = {
+["profiles"] = {
+["Default"] = {
+["x"] = 658.5185546875,
+["hideblizz"] = false,
+},
+},
+},
+["Target"] = {
+["profiles"] = {
+["Default"] = {
+["w"] = 180,
+["y"] = 205.6602478027344,
+["x"] = 223.9107971191406,
+["hideblizz"] = false,
+["point"] = "BOTTOM",
+["texture"] = "Asuri",
+},
+},
+},
+["Latency"] = {
+["profiles"] = {
+["Default"] = {
+["lagcolor"] = {
+0.4392157196998596,
+nil,
+nil,
+1,
+},
+},
+},
+},
+},
+["profileKeys"] = {
+["Güth - Nightslayer"] = "Default",
+["Võre - Nightslayer"] = "Default",
+["Urbro - Nightslayer"] = "Default",
+["Tevito - Nightslayer"] = "Default",
+["Fjsahf - Nightslayer"] = "Default",
+["Banquim - Nightslayer"] = "Default",
+["Auuc - Dreamscythe"] = "Default",
+["Âbra - Nightslayer"] = "Default",
+["Damorin - Nightslayer"] = "Default",
+["Chudpal - Nightslayer"] = "Default",
+["Gîanna - Dreamscythe"] = "Default",
+},
+["profiles"] = {
+["Default"] = {
+["modules"] = {
+["Swing"] = false,
+["Buff"] = false,
+["Interrupt"] = false,
+["Flight"] = false,
+["Mirror"] = false,
+["GCD"] = false,
+["Focus"] = false,
+["Timer"] = false,
+["Range"] = false,
+["Target"] = false,
+},
+},
+},
+}

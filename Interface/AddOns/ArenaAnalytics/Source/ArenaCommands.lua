@@ -1,0 +1,434 @@
+local _, ArenaAnalytics = ...; -- Addon Namespace
+local Commands = ArenaAnalytics.Commands;
+
+-- Local module aliases
+local ArenaTracker = ArenaAnalytics.ArenaTracker;
+local ArenaMatch = ArenaAnalytics.ArenaMatch;
+local API = ArenaAnalytics.API;
+local Colors = ArenaAnalytics.Colors;
+local Options = ArenaAnalytics.Options;
+local Sessions = ArenaAnalytics.Sessions;
+local VersionManager = ArenaAnalytics.VersionManager;
+local Debug = ArenaAnalytics.Debug;
+local Filters = ArenaAnalytics.Filters;
+local Helpers = ArenaAnalytics.Helpers;
+local Search = ArenaAnalytics.Search;
+local Internal = ArenaAnalytics.Internal;
+
+-------------------------------------------------------------------------
+-- Helper functions
+
+local function ColorSlashCommand(text)
+	return Colors:ColorText(text, Colors.slashCommandColor);
+end
+
+local function PrintCommandHelp(command, description)
+		ArenaAnalytics:PrintSystem(ColorSlashCommand(command), description);
+end
+
+
+-------------------------------------------------------------------------
+-- Command Handlers
+
+function Commands.HandleCommand_Help()
+	ArenaAnalytics:PrintSystemSpacer();
+	ArenaAnalytics:PrintSystem("List of slash commands:");
+	PrintCommandHelp("/aa", "Togggles ArenaAnalytics main panel.");
+	PrintCommandHelp("/aa version", "Prints ArenaAnalytics version.");
+	PrintCommandHelp("/aa undo", "Undo the latest import. (White * marked matches)");
+	PrintCommandHelp("/aa played", "Prints filtered duration overview.");
+	PrintCommandHelp("/aa que", "Prints filtered queue time overview.");
+	PrintCommandHelp("/aa total", "Prints total unfiltered matches.");
+	PrintCommandHelp("/aa credits", "Print addon credits.");
+	ArenaAnalytics:PrintSystemSpacer();
+end
+
+
+function Commands.HandleCommand_Credits()
+	ArenaAnalytics:PrintSystem("ArenaAnalytics authors: Lingo, Zeetrax.   Developed in association with Hydra. www.twitch.tv/Hydramist");
+end
+
+
+function Commands.HandleCommand_Version()
+	ArenaAnalytics:PrintSystem("Current version: " .. Colors:GetVersionText("Invalid Version"));
+end
+
+
+function Commands.HandleCommand_Total()
+	ArenaAnalytics:PrintSystem("Total arenas stored: ", #ArenaAnalyticsDB);
+end
+
+
+function Commands.HandleCommand_Played()
+	local countedMatches = 0;
+
+	local total = 0;
+	local seasonTotal = 0;
+	local longest = 0;
+	for i=1, ArenaAnalytics.filteredMatchCount do
+		local match = ArenaAnalytics:GetFilteredMatch(i);
+		local duration = ArenaMatch:GetDuration(match) or 0;
+
+		if(duration > 0 and duration < 2760) then
+			total = total + duration;
+			longest = max(0, longest, duration);
+
+			if(ArenaMatch:GetSeason(match) == API:GetCurrentSeason()) then
+				seasonTotal = seasonTotal + duration;
+			end
+
+			countedMatches = countedMatches + 1;
+		end
+	end
+
+	local function PrintColored(text, duration)
+		if(duration == "") then
+			duration = "None";
+		end
+
+		local coloredText = Colors:ColorText(text, Colors.white);
+		local coloredDuration = Colors:ColorText(duration, Colors.statsColor);
+		ArenaAnalytics:PrintSystem(coloredText, coloredDuration);
+	end
+
+	local average = countedMatches > 0 and Round(total / countedMatches) or 0;
+
+	ArenaAnalytics:PrintSystem(Colors:ColorText("==== Arena Played Time ==========", Colors.infoColor));
+	PrintColored(" Total: ", SecondsToTime(total));
+	--PrintColored(" Season Total: ", SecondsToTime(seasonTotal));
+	PrintColored(" Average: ", SecondsToTime(average));
+	PrintColored(" Longest: ", SecondsToTime(Round(longest)));
+	ArenaAnalytics:PrintSystem(Colors:ColorText("=============================", Colors.infoColor));
+end
+
+
+function Commands.HandleCommand_Queue()
+	local countedMatches = 0;
+
+	local total = 0;
+	local seasonTotal = 0;
+	local longest = 0;
+	for i=1, ArenaAnalytics.filteredMatchCount do
+		local match = ArenaAnalytics:GetFilteredMatch(i);
+		local queueTime = ArenaMatch:GetQueueTime(match);
+
+		if(queueTime) then
+			total = total + queueTime;
+			longest = max(0, longest, queueTime);
+
+			if(ArenaMatch:GetSeason(match) == API:GetCurrentSeason()) then
+				seasonTotal = seasonTotal + queueTime;
+			end
+
+			countedMatches = countedMatches + 1;
+		end
+	end
+
+	local function PrintColored(text, queueTime)
+		if(queueTime == "") then
+			queueTime = "None";
+		end
+
+		local coloredText = Colors:ColorText(text, Colors.white);
+		local coloredQueueTime = Colors:ColorText(queueTime, Colors.statsColor);
+		ArenaAnalytics:PrintSystem(coloredText, coloredQueueTime);
+	end
+
+	local average = countedMatches > 0 and Round(total / countedMatches) or 0;
+
+	ArenaAnalytics:PrintSystem(Colors:ColorText("==== Arena Queue Time ==========", Colors.infoColor));
+	PrintColored(" Total: ", SecondsToTime(total));
+	--PrintColored(" Season Total: ", SecondsToTime(seasonTotal));
+	PrintColored(" Average: ", SecondsToTime(average));
+	PrintColored(" Longest: ", SecondsToTime(Round(longest)));
+	ArenaAnalytics:PrintSystem(Colors:ColorText("=============================", Colors.infoColor));
+end
+
+
+function Commands.HandleCommand_Debug(level)
+	Debug:SetDebugLevel(level);
+end
+
+
+function Commands.HandleCommand_Convert()
+	ArenaAnalytics:PrintSystem("Forcing data version conversion..");
+	if(not ArenaAnalyticsDB or #ArenaAnalyticsDB == 0) then
+		VersionManager:OnInit();
+	end
+	ArenaAnalyticsScrollFrame:Hide();
+end
+
+
+function Commands.HandleCommand_Update(arg)
+	if(arg == "sessions") then
+		ArenaAnalytics:PrintSystem("Updating sessions in ArenaAnalyticsDB.");
+		Sessions:RecomputeSessionsForMatchHistory(true);
+		Filters:Refresh();
+	elseif(arg == "groups") then
+		ArenaAnalytics:PrintSystem("Updating group sorting in ArenaAnalyticsDB.");
+		ArenaAnalytics:ResortGroupsInMatchHistory(true);
+		Filters:Refresh();
+	elseif(arg == "matches") then
+		ArenaAnalytics:PrintSystem("Resorting matches in ArenaAnalyticsDB.");
+		ArenaAnalytics:ResortMatchHistory(true);
+		Filters:Refresh();
+	else
+		-- Show /aa update help
+		ArenaAnalytics:PrintSystemSpacer();
+		PrintCommandHelp("/aa update", "help:");
+		PrintCommandHelp("/aa update sessions", "Recomputes sessions.");
+		PrintCommandHelp("/aa update groups", "Sort players in all stored groups.");
+		PrintCommandHelp("/aa update matches", "Resorts the match history. Invalid dates last.");
+	end
+end
+
+
+function Commands.HandleCommand_Purge()
+	C_Timer.After(0, function() ArenaAnalytics:ShowPurgeConfirmationDialog() end);
+end
+
+
+function Commands.HandleCommand_DumpRealms()
+	print(" ");
+	ArenaAnalytics:Print("============================= ");
+	ArenaAnalytics:Print("  Known Realms:     (Current realm: " .. (ArenaAnalytics:GetLocalRealmIndex() or "").. ")");
+
+	for i,realm in ipairs(ArenaAnalyticsDB.realms) do
+		ArenaAnalytics:Print("     ", i, "   ", realm);
+	end
+	ArenaAnalytics:Print("============================= ");
+	print(" ");
+end
+
+
+function Commands.HandleCommand_Dump()
+	print(" ");
+	ArenaAnalytics:Print("============================= ");
+
+	local interfaceVersion = select(4, GetBuildInfo());
+	ArenaAnalytics:Print("Interface Version:", interfaceVersion);
+
+	if(API:IsInArena()) then
+		ArenaAnalytics:Print("Arena Map ID:", API:GetCurrentMapID(), GetZoneText());
+
+		if(API.hasDampening) then
+			ArenaAnalytics:Print("Dampening Buff:", API:GetCurrentDampening());
+		end
+
+		ArenaAnalytics:Print("IsArenaPreparation:", API:IsArenaPreparation());
+	end
+
+	ArenaAnalytics:Print("============================= ");
+	print(" ");
+end
+
+
+function Commands.HandleCommand_Test(...)
+	print(" ");
+	ArenaAnalytics:Print("============================= ");
+
+	ArenaAnalytics:Print("============================= ");
+end
+
+
+function Commands.HandleCommand_DumpSpecs()
+	print(" ");
+	ArenaAnalytics:Print("============================= ");
+
+	Debug:LogGreen("Logging Specializations..")
+
+	for classIndex=1, GetNumClasses() + 2 do
+		local className, classFile, classID = GetClassInfo(classIndex);
+		if(classFile) then
+			Debug:Log("     ", classFile);
+
+			for specIndex=1, C_SpecializationInfo.GetNumSpecializationsForClassID(classIndex) do
+				local id, name, description, icon, role, recommended, allowedForBoost, masterySpell1, masterySpell2 = GetSpecializationInfoForClassID(classIndex, specIndex);
+				local spec_id = API:GetMappedAddonSpecID(id);
+				local class, spec = Internal:GetClassAndSpec(spec_id);
+
+				local fakeSearchToken = {
+					value = Helpers:ToSafeLower(spec or ""),
+					explicitType = "spec",
+					exact = true,
+				};
+
+				local _, value, _, shortValue = Search:FindSearchValueDataForToken(fakeSearchToken);
+				if(spec_id ~= value) then
+					Debug:Log("          ", name, id, "  ///  ", class, spec, spec_id, " / ", value);
+				end
+			end
+		end
+	end
+
+	ArenaAnalytics:Print("============================= ");
+end
+
+
+function Commands.HandleCommand_FixDurations()
+	for i=1, #ArenaAnalyticsDB do
+		local match = ArenaAnalyticsDB[i];
+		if(match) then
+			ArenaMatch:RecomputeShuffleDurations(match);
+		end
+	end
+
+	ArenaAnalytics:Print("Recomputed shuffle durations.");
+end
+
+
+function Commands.HandleCommand_Inspect()
+	Debug:LogGreen("Attempting debug inspection..")
+	Debug:NotifyInspectSpec("target");
+end
+
+
+function Commands.HandleCommand_Undo(...)
+	local oldCount = #ArenaAnalyticsDB;
+
+	ArenaAnalytics:UndoLastImport();
+
+	local newCount = #ArenaAnalyticsDB;
+
+	if(oldCount ~= newCount) then
+		ArenaAnalytics:PrintSystem(string.format("Import undone - Removed %s arenas!", (oldCount - newCount)));
+	else
+		ArenaAnalytics:PrintSystem("Import undo made no changes.");
+	end
+end
+
+
+--------------------------------------
+-- Custom Slash Command
+--------------------------------------
+
+Commands.list = {
+	["help"] = Commands.HandleCommand_Help,
+	["credits"] = Commands.HandleCommand_Credits,
+	["version"] = Commands.HandleCommand_Version,
+	["total"] = Commands.HandleCommand_Total,
+	["played"] = Commands.HandleCommand_Played,
+	["queue"] = Commands.HandleCommand_Queue,
+	["que"] = Commands.HandleCommand_Queue,
+	["update"] = Commands.HandleCommand_Update,
+	["purge"] = Commands.HandleCommand_Purge,
+	["inspect"] = Commands.HandleCommand_Inspect,
+	["undo"] = Commands.HandleCommand_Undo,
+
+	-- Debug commands
+	["debug"] = Commands.HandleCommand_Debug,				-- Debug level
+	["test"] = Commands.HandleCommand_Test,					-- Debugging: Used for temporary explicit triggering of logic, for testing purposes.
+	["dump"] = Commands.HandleCommand_Dump,					-- Debugging: Used to gather zone and version info from users helping with version update.
+	["dumprealms"] = Commands.HandleCommand_DumpRealms,		-- Debugging: Used for temporary explicit triggering of logic, for testing purposes.
+	["dumpspecs"] = Commands.HandleCommand_DumpSpecs,
+
+	-- Conversions
+	["convert"] = Commands.HandleCommand_Convert,
+	["fixshuffle"] = Commands.HandleCommand_FixDurations,
+};
+
+local function handleSlashCommands(str)
+	if (#str == 0) then
+		-- User just entered "/aa" with no additional args.
+		ArenaAnalyticsToggle();
+		return;
+	end
+
+	str = Helpers:ToSafeLower(str);
+
+	-- Split args by spaces
+	local args = {};
+	for _, arg in ipairs({ string.split(' ', str) }) do
+		if (#arg > 0) then
+			table.insert(args, arg);
+		end
+	end
+
+	local path = Commands.list; -- required for updating found table.
+
+	for i, arg in ipairs(args) do
+		if (#arg > 0) then -- if string length is greater than 0.
+			if (path[arg]) then
+				if (type(path[arg]) == "function") then
+					-- all remaining args passed to our function!
+					path[arg](select(i + 1, unpack(args)));
+					return;
+				elseif (type(path[arg]) == "table") then
+					path = path[arg]; -- another sub-table found!
+				else
+					Debug:LogWarning("Invalid /aa command:", i, path[arg]);
+					break;
+				end
+			else
+				-- Does not exist!
+				break;
+			end
+		end
+	end
+
+	Commands.list.help();
+end
+
+
+-------------------------------------------------------------------------
+-- afk / surrender commands
+
+SLASH_ArenaAnalyticsSurrender1 = nil;
+
+function Commands.HandleChatAfk(message)
+	Debug:LogGreen("/afk override triggered.");
+	local surrendered = API:TrySurrenderArena("afk");
+	if(surrendered == nil) then
+		-- Fallback to base /afk
+		API:SendChatMessage(message, "AFK");
+	end
+end
+
+function Commands.HandleGoodGame()
+	Debug:LogGreen("/gg triggered.");
+
+    if(not API:HasSurrenderAPI()) then
+        return nil;
+    end
+
+	API:TrySurrenderArena("gg");
+end
+
+function Commands.UpdateSurrenderCommands()
+	if(not API:HasSurrenderAPI()) then
+		return;
+	end
+
+	local isAfkOverrideActive = (SlashCmdList.CHAT_AFK == Commands.HandleChatAfk);
+	if(Options:Get("enableSurrenderAfkOverride")) then
+		if(not isAfkOverrideActive) then
+			Commands.previousAfkFunc = SlashCmdList.CHAT_AFK;
+			SlashCmdList.CHAT_AFK = Commands.HandleChatAfk;
+		end
+	elseif(isAfkOverrideActive and Commands.previousAfkFunc) then
+		SlashCmdList.CHAT_AFK = Commands.previousAfkFunc;
+	end
+
+	local hasGoodGameCommand = (SLASH_ArenaAnalyticsSurrender1 ~= nil and SlashCmdList.ArenaAnalyticsSurrender ~= nil);
+	if(Options:Get("enableSurrenderGoodGameCommand")) then
+		if(not hasGoodGameCommand) then
+			-- /gg to surrender
+			SLASH_ArenaAnalyticsSurrender1 = "/gg";
+			SlashCmdList.ArenaAnalyticsSurrender = Commands.HandleGoodGame;
+		end
+	elseif(hasGoodGameCommand) then
+		SLASH_ArenaAnalyticsSurrender1 = nil;
+		SlashCmdList.ArenaAnalyticsSurrender = nil;
+	end
+end
+
+-------------------------------------------------------------------------
+
+function Commands:Initialize()
+	SLASH_ArenaAnalyticsCommands1 = "/AA";
+	SLASH_ArenaAnalyticsCommands2 = "/ArenaAnalytics";
+	SlashCmdList.ArenaAnalyticsCommands = handleSlashCommands;
+
+	-- Update /afk and /gg for surrender, if the game version supports it
+	Commands.UpdateSurrenderCommands();
+end

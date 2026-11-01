@@ -1,0 +1,24 @@
+
+AtlasLootDB = {
+["profileKeys"] = {
+["Urbro - Nightslayer"] = "Urbro - Nightslayer",
+["Güth - Nightslayer"] = "Güth - Nightslayer",
+["Gîanna - Dreamscythe"] = "Gîanna - Dreamscythe",
+},
+["global"] = {
+["__addonrevision"] = 12488,
+["VendorPrice"] = {
+[29273] = "BoJ:25",
+[33700] = "arena:930",
+[33759] = "arena:930",
+},
+},
+["profiles"] = {
+["Urbro - Nightslayer"] = {
+},
+["Güth - Nightslayer"] = {
+},
+["Gîanna - Dreamscythe"] = {
+},
+},
+}

@@ -1,0 +1,36 @@
+
+NugComboBarDB_Global = {
+["global"] = {
+["enablePrettyRunes"] = false,
+["classConfig"] = {
+["ROGUE"] = {
+"Disabled",
+},
+["DRUID"] = {
+"Disabled",
+},
+},
+},
+["DB_VERSION"] = 2,
+["profileKeys"] = {
+["Banquim - Nightslayer"] = "Default",
+["Güth - Nightslayer"] = "Default",
+["Võre - Nightslayer"] = "Default",
+["Âbra - Nightslayer"] = "Default",
+["Chudpal - Nightslayer"] = "Default",
+["Fjsahf - Nightslayer"] = "Default",
+["Gîanna - Dreamscythe"] = "Default",
+},
+["profiles"] = {
+["Default"] = {
+["y"] = -148.9150390625,
+["x"] = -79.47722625732422,
+["hideWithoutTarget"] = true,
+["glowIntensity"] = 0.45,
+["scale"] = 1,
+["showAlways"] = true,
+["showEmpty"] = true,
+["preset3dlayer2"] = "glowOrangeStatic",
+},
+},
+}

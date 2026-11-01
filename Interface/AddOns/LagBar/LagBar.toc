@@ -1,0 +1,28 @@
+## Interface: 120105, 110207, 50504, 40402, 38002, 30405, 20506, 16001, 11509
+## Title: LagBar
+## Author: Xruptor
+## Version: 8.8
+## IconTexture: 136091
+## X-Curse-Project-ID: 17487
+## X-WoWI-ID: 12373
+## X-Wago-ID: 0mKOyZNx
+## Notes: Displays a simple bar with some Latency Information.
+## Notes-zhCN: 显示延迟/帧数信息的简单提醒。
+## OptionalDeps: tekDebug
+## SavedVariables: LagBar_DB
+
+locale\locales.lua
+locale\enUS.lua
+locale\deDE.lua
+locale\esES.lua
+locale\esMX.lua
+locale\frFR.lua
+locale\itIT.lua
+locale\koKR.lua
+locale\ptBR.lua
+locale\zhCN.lua
+locale\zhTW.lua
+locale\ruRU.lua
+
+LagBar.lua
+config.lua

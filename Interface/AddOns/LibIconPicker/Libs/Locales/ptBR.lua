@@ -1,0 +1,24 @@
+--- @type LibIconPicker_Namespace
+local ns = select(2, ...).LibIconPicker; if not ns then return end
+
+local L = ns:NewLocale('ptBR'); if not L then return end
+
+--[[-----------------------------------------------------------------------------
+Localized Texts
+-------------------------------------------------------------------------------]]
+L['General'] = 'Geral'
+L['Icon Picker'] = 'Seletor de ícones'
+L['Name'] = 'Nome'
+L['Max'] = 'Máx'
+L['Characters'] = 'Caracteres'
+L['Selected Icon'] = 'Ícone selecionado'
+L['Selected Icon::Desc'] =
+  'Mostra o ícone selecionado mais recentemente. Sua escolha anterior é lembrada durante esta sessão.'
+L['Selected Icon::DragHint'] =
+  'Você também pode arrastar um ícone para cá do seu grimório, das suas bolsas ou de qualquer outro lugar.'
+L['All Icons'] = 'Todos os ícones'
+L['Items'] = 'Itens'
+L['Spells'] = 'Feitiços'
+L['Recent Icons'] = 'Ícones recentes'
+L['No Recent Icons'] = 'Nenhum ícone recente'
+L['Recent Icons::Tip'] = 'Reutilize um ícone escolhido recentemente.'

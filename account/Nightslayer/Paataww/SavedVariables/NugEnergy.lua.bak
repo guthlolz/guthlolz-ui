@@ -1,0 +1,2 @@
+
+NugEnergyDB_Character = nil

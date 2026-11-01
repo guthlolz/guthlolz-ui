@@ -1,0 +1,260 @@
+local _, ArenaAnalytics = ...; -- Namespace
+local Initialization = ArenaAnalytics.Initialization;
+
+-- Local module aliases
+local Internal = ArenaAnalytics.Internal;
+local Localization = ArenaAnalytics.Localization;
+local Bitmap = ArenaAnalytics.Bitmap;
+local Options = ArenaAnalytics.Options;
+local Filters = ArenaAnalytics.Filters;
+local FilterTables = ArenaAnalytics.FilterTables;
+local API = ArenaAnalytics.API;
+local AAtable = ArenaAnalytics.AAtable;
+local Events = ArenaAnalytics.Events;
+local Search = ArenaAnalytics.Search;
+local VersionManager = ArenaAnalytics.VersionManager;
+local Import = ArenaAnalytics.Import;
+local ArenaTracker = ArenaAnalytics.ArenaTracker;
+local Debug = ArenaAnalytics.Debug;
+local MinimapButton = ArenaAnalytics.MinimapButton;
+local Commands = ArenaAnalytics.Commands;
+local Prints = ArenaAnalytics.Prints;
+local DataCollector = ArenaAnalytics.DataCollector;
+
+-------------------------------------------------------------------------
+-- This file always must be loaded last,
+-- ensuring all modules functions has been declared
+-------------------------------------------------------------------------
+
+-- Await VARIABLES_LOADED and other early events
+ArenaAnalyticsScrollFrame:Hide();
+Events:Initialize();
+
+-- Initialization state
+Initialization.locked = false;
+Initialization.lastStep = 0;
+Initialization.isLogin = nil;
+Initialization.isReload = nil;
+
+Initialization.receivedEvents = {}
+
+local initializationStages = {
+	{ step = 1, func = "Step1_AddonLoaded", event = "ADDON_LOADED" },
+	{ step = 2, func = "Step2_VariablesLoaded", event = "VARIABLES_LOADED" },
+	{ step = 3, func = "Step3_PlayerLogin", event = "PLAYER_LOGIN" },
+	{ step = 4, func = "Step4_EnteringWorld", event = "PLAYER_ENTERING_WORLD" },
+	{ step = 5, func = "Step5_InitiateTracking", event = "UPDATE_BATTLEFIELD_STATUS" },
+
+	-- This must always come last, and none above may be blocking forever
+	{ func = "Step6_LoadComplete" },
+};
+
+local stages = {};
+
+local function LogStep(step, ...)
+	local stepData = step and initializationStages[step];
+	assert(stepData);
+
+	Debug:LogGreen("Initialization step:", step, stepData.func, stepData.event, ...);
+end
+
+function Initialization:HandleLoadEvents(event, ...)
+	assert(event);
+
+	if(Initialization.hasLoaded) then
+		return;
+	end
+
+	if(event == "PLAYER_ENTERING_WORLD") then
+		local isLogin, isReload = ...;
+
+		Initialization.isLogin = isLogin;
+		Initialization.isReload = isReload;
+	end
+
+	if(Initialization.receivedEvents[event]) then
+		Debug:LogWarning("Initialization event received twice:", event, "!", ...);
+		return;
+	end
+	Initialization.receivedEvents[event] = true;
+
+	-- Try the next step if state is currently unlocked
+	Initialization:TryAdvanceInitialization();
+end
+
+
+function Initialization:InitiateStep(currentStep)
+	assert(tonumber(currentStep) and Initialization.lastStep < currentStep, ("Initialization:InitiateStep called twice for step: " .. (currentStep or "nil") .. " after step: " .. (Initialization.lastStep or "nil")));
+	LogStep(currentStep);
+
+	Initialization.locked = true;
+	Initialization.lastStep = currentStep;
+end
+
+function stages.Step1_AddonLoaded()
+	Initialization:InitiateStep(1);
+	LogStep(1);
+
+	local successfulRequest = C_ChatInfo.RegisterAddonMessagePrefix("ArenaAnalytics");
+	if(not successfulRequest) then
+		Debug:LogWarning("Failed to register Addon Message Prefix: 'ArenaAnalytics'!");
+	end
+
+	-- Welcome Message
+	Prints:PrintWelcomeMessage();
+end
+
+
+function stages.Step2_VariablesLoaded()
+	Initialization:InitiateStep(2);
+	LogStep(2, "IsLoggedIn:", IsLoggedIn());
+
+	-- Initialize DBs
+	ArenaAnalytics:InitializeArenaAnalyticsDB();
+
+	MinimapButton:Initialize();
+	Debug:Initialize();
+
+	---------------------------------
+	-- Initialize modules
+	---------------------------------
+
+	Import:Initiate();
+	Options:Initialize();
+	Commands:Initialize();
+	Bitmap:Initialize();
+	Internal:Initialize();
+	Localization:Initialize();
+	Search:Initialize();
+	API:Initialize();
+	FilterTables:Initialize();
+	Filters:Initialize();
+
+	if(DataCollector.Initiate) then
+		DataCollector:Initiate();
+	end
+end
+
+
+function stages.Step3_PlayerLogin()
+	Initialization:InitiateStep(3);
+	LogStep(3, "IsLoggedIn:", IsLoggedIn());
+
+	VersionManager:OnInit();
+	AAtable:OnLoad();
+
+	ArenaTracker:Initialize();
+end
+
+
+function stages.Step4_EnteringWorld()
+	Initialization:InitiateStep(4);
+
+	local isOffSeason = API:IsOffSeason();
+	LogStep(4, "isLogin:", Initialization.isLogin, "isReload:", Initialization.isReload, "IsOffSeason", isOffSeason);
+
+	ArenaAnalytics:InitializeTransientDB(isOffSeason);
+
+	-- TODO: Implement to inform users of latest versions (Avoid false positives from development versions!)
+	-- Version Message (Unused)
+	if(IsInInstance() or IsInGroup(1)) then
+		--local channel = IsInInstance() and "INSTANCE_CHAT" or "PARTY";
+		--local messageSuccess = API:SendAddonMessage("ArenaAnalytics", Helpers:UnitGUID("player") .. "_deliver|version#?=" .. version, channel)
+	end
+
+	-- Don't wait for battlefield event outside of arena, let step 5 happen immediately
+	if(not API:IsInArena()) then
+		if(ArenaTracker:IsTrackingArena(true)) then
+			Debug:Log("Saving previous arena at init time.");
+			ArenaTracker:Save(ArenaAnalyticsTransientDB.currentArena);
+			ArenaTracker:Clear();
+		end
+
+		Debug:Log("Skipping battlefield status event outside arena.");
+		Initialization.receivedEvents["UPDATE_BATTLEFIELD_STATUS"] = true;
+	end
+end
+
+
+-- Initiate tracking if in arena, otherwise skip
+function stages.Step5_InitiateTracking()
+	Initialization:InitiateStep(5);
+
+	LogStep(5, "IsInArena:", API:IsInArena());
+
+	-- Force a status update and set initial wasInArena
+	Events:CheckZoneChanged(true);
+
+	if(API:IsInArena()) then
+		ArenaAnalytics.loadedIntoArena = true; -- Limit Events module from entering the arena
+	else
+		Debug:Log("Step5_InitiateTracking: Triggering ArenaTracker:Clear()");
+		ArenaTracker:Clear();
+	end
+end
+
+
+function stages.Step6_LoadComplete()
+	Initialization:InitiateStep(6);
+	LogStep(6);
+
+	-- Mark initialization as done.
+	Initialization.hasLoaded = true;
+	Initialization.hasPending = nil;
+
+	Events:UnregisterLoadEvents();
+	Events:OnLoad();
+end
+
+
+local function shouldInitiateStep(stepNumber, stepData)
+	if(not Debug:Assert(stepData and type(stepData.func) == "string")) then
+		return false;
+	end
+
+	if(stepNumber - 1 ~= Initialization.lastStep) then
+		return false;
+	end
+
+	if(stepData.event and not Initialization.receivedEvents[stepData.event]) then
+		return false;
+	end
+
+	if(stepData.conditionFunc and not stepData.conditionFunc()) then
+		return false;
+	end
+
+	return true;
+end
+
+local function TryAdvanceInitialization_Internal()
+	for stepNumber=Initialization.lastStep+1, #initializationStages do
+		local stepData = initializationStages[stepNumber];
+
+		if(not shouldInitiateStep(stepNumber, stepData)) then
+			return;
+		end
+
+		local stageFunc = stages[stepData.func];
+		stageFunc(stepNumber);
+	end
+end
+
+function Initialization:TryAdvanceInitialization(forced)
+	if(Initialization.locked and not forced) then
+		Debug:Log("Initialization locked. Skipping attempt.");
+		Initialization.hasPending = true;
+		return;
+	end
+
+	Initialization.locked = true;
+	TryAdvanceInitialization_Internal();
+
+	if(Initialization.hasPending and not Initialization.hasLoaded) then
+		-- Force repeat next frame, instead of unlocking
+		C_Timer.After(0, function() Initialization:TryAdvanceInitialization(true) end);
+		return;
+	end
+
+	Initialization.locked = false;
+end

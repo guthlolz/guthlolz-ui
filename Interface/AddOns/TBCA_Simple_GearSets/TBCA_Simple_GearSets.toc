@@ -1,0 +1,9 @@
+## Interface: 20506
+## Title: TBCA Simple GearSets
+## Notes: Lightweight gear set manager for TBC Anniversary
+## Author: Unforvegan
+## Version: v5.0
+## OptionalDeps: TBCA_BIS
+## SavedVariables: TBCASimpleGearSetsDB
+
+core.lua

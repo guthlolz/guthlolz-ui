@@ -1,0 +1,85 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+
+    <Script file="IgnoreSlotActionButtonMixin.lua"/>
+    <Script file="PlaceInBagsSlotActionButtonMixin.lua"/>
+    <Script file="EquipmentSlotFlyoutMixin.lua"/>
+    <Script file="EquipmentSlotFlyoutManager.lua"/>
+
+    <Button name="GearsEquipmentSlotActionButtonTemplate" inherits="UIButtonTemplate" virtual="true">
+        <Size x="38" y="38"/>
+        <Anchors>
+            <Anchor point="CENTER" x=".5" y=".5"/>
+        </Anchors>
+        <Layers>
+            <Layer level="OVERLAY">
+                <Texture parentKey="Icon" setAllPoints="true"/>
+            </Layer>
+        </Layers>
+        <NormalTexture file="Interface\AddOns\Gears\Assets\ui-button-empty"/>
+        <PushedTexture file="Interface\AddOns\Gears\Assets\ui-button-empty" alpha="0.9" alphaMode="ADD"/>
+        <HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alpha="0.6" alphaMode="ADD"/>
+    </Button>
+
+    <Button name="Gears_PlaceInBagsSlotActionButtonTemplate" inherits="GearsEquipmentSlotActionButtonTemplate" virtual="true"
+            mixin="Gears_PlaceInBagsSlotActionButtonMixin">
+        <Scripts>
+            <OnLoad method="OnLoad"/>
+            <OnClick method="OnClick"/>
+        </Scripts>
+    </Button>
+    <Button name="Gears_IgnoreSlotActionButtonTemplate" inherits="GearsEquipmentSlotActionButtonTemplate" virtual="true"
+            mixin="Gears_IgnoreSlotActionButtonMixin">
+        <Scripts>
+            <OnLoad method="OnLoad"/>
+            <OnClick method="OnClick"/>
+        </Scripts>
+    </Button>
+
+    <!-- Flyout Arrow Button -->
+    <Button name="GearsEquipmentSlotFlyoutTemplate" mixin="Gears_EquipmentSlotFlyoutMixin"
+            hidden="true" frameStrata="HIGH" frameLevel="1000" virtual="true">
+        <Size x="14" y="14"/>
+        <Layers>
+            <Layer level="ARTWORK" textureSubLevel="1">
+                <Texture parentKey="Arrow">
+                    <Size x="52" y="14"/>
+                    <Anchors>
+                        <Anchor point="CENTER"/>
+                    </Anchors>
+                </Texture>
+            </Layer>
+        </Layers>
+
+        <Scripts>
+            <OnLoad method="OnLoad"/>
+            <OnClick method="OnClick"/>
+            <OnEnter method="OnEnter"/>
+            <OnLeave method="OnLeave"/>
+        </Scripts>
+
+        <Frames>
+            <Frame parentKey="Flyout" hidden="false" inherits="BackdropTemplate" enableMouse="true">
+                <KeyValues>
+                    <KeyValue key="backdropInfo" value="GEARS_BACKDROP_TOAST_12_12" type="global"/>
+                </KeyValues>
+                <Size x="48" y="48"/>
+                <Anchors>
+                    <Anchor point="LEFT" relativePoint="RIGHT" x="-3" y="0"/>
+                </Anchors>
+                <Animations>
+                    <AnimationGroup parentKey="anim">
+                        <Alpha order="1" fromAlpha="0" toAlpha="1" duration="0.08"
+                               smoothing="IN_OUT"/>
+                        <Translation order="1" offsetX="3" offsetY="0"
+                                     duration="0.08" smoothing="IN_OUT"/>
+                        <Scripts>
+                            <OnPlay>self:GetParent():OnPlay()</OnPlay>
+                            <OnFinished>self:GetParent():OnFinished()</OnFinished>
+                        </Scripts>
+                    </AnimationGroup>
+                </Animations>
+            </Frame>
+        </Frames>
+    </Button>
+
+</Ui>

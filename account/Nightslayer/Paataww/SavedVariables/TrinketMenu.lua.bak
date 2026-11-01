@@ -1,0 +1,3 @@
+
+TrinketMenuPerOptions = nil
+TrinketMenuQueue = nil

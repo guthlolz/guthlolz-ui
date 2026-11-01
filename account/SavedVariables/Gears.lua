@@ -1,0 +1,25 @@
+
+GEARS_DB = {
+["profileKeys"] = {
+["Güth - Nightslayer"] = "Güth - Nightslayer",
+["Võre - Nightslayer"] = "Võre - Nightslayer",
+["Urbro - Nightslayer"] = "Urbro - Nightslayer",
+["Tevito - Nightslayer"] = "Tevito - Nightslayer",
+["Fjsahf - Nightslayer"] = "Fjsahf - Nightslayer",
+["Banquim - Nightslayer"] = "Banquim - Nightslayer",
+["Auuc - Dreamscythe"] = "Auuc - Dreamscythe",
+["Chudpal - Nightslayer"] = "Chudpal - Nightslayer",
+["Damorin - Nightslayer"] = "Damorin - Nightslayer",
+["Âbra - Nightslayer"] = "Âbra - Nightslayer",
+["Gîanna - Dreamscythe"] = "Gîanna - Dreamscythe",
+},
+["global"] = {
+["helpTipsDismissed"] = {
+["SetIconDrag"] = true,
+},
+["announcementsShown"] = {
+["consoleCommands"] = true,
+},
+["isInitialShowComplete"] = true,
+},
+}

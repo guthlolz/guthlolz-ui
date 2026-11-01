@@ -1,0 +1,48 @@
+## Interface: 120105, 120100
+## Title: Better|cff00c0ffBlizz|rPlates
+## Notes: Default Blizzard Nameplates with more features added to them with easy settings.
+## Author: Bodify
+## Version: v2.2.3b
+## SavedVariables: BetterBlizzPlatesDB, BBPCVarBackupsDB
+## IconAtlas: gmchat-icon-blizz
+## X-Curse-Project-ID: 913377
+## X-Wago-ID: b6mb47KP
+
+embeds.xml
+
+init.lua
+locales\locales.xml
+shared\functions.lua
+shared\fontFallback.lua
+shared\functions_classics.lua
+shared\nameplateToggles.lua
+shared\threatTweaks.lua
+shared\comboVisibility.lua
+shared\ImportExport.lua
+
+retail\modules\combat.lua
+retail\modules\castbar.lua
+retail\modules\arenaid.lua
+retail\modules\execute.lua
+retail\modules\faction.lua
+retail\modules\healthNumbers.lua
+retail\modules\target.lua
+retail\modules\healer.lua
+retail\modules\absorb.lua
+retail\modules\classIcon.lua
+retail\modules\partyPointer.lua
+retail\modules\pet.lua
+retail\modules\bgIndicator.lua
+retail\modules\quest.lua
+retail\modules\auras.lua
+retail\modules\profiles.lua
+shared\importConvert.lua
+retail\modules\misc.lua
+retail\modules\prd.lua
+retail\modules\totem.lua
+retail\modules\druid\overcharges.lua
+retail\modules\shaman\maelstrom.lua
+retail\modules\hunter\tipofthespear.lua
+
+retail\gui.lua
+retail\BetterBlizzPlates.lua

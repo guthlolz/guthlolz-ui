@@ -1,0 +1,22 @@
+<!--suppress ALL -->
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+    <Script file="Core\Namespace.lua"/>
+    <Script file="Core\MainController.lua"/>
+    <Script file="Database\DatabaseSchema.lua" />
+    <Include file="Locales\_Locales.xml"/>
+    <Script file="Util\InventoryUtil.lua"/>
+    <Script file="Util\ItemUtil.lua"/>
+    <Script file="Util\CharacterFrameUtil.lua"/>
+    <Script file="Util\LibIconPickerUtil.lua"/>
+    <Include file="Widgets\_Widgets.xml"/>
+    <Include file="Assets\Fonts\_Fonts.xml"/>
+    <Script file="Frames\Help\TourList.lua"/>
+    <Script file="Frames\Help\HelpTour.lua"/>
+    <Include file="Frames\EquipmentSet\EquipmentSetUI.xml"/>
+    <Script file="Frames\ActionBar\ActionBarEquipmentSet.lua"/>
+    <Include file="Frames\Announcement\AnnouncementUI.xml"/>
+    <Include file="Announcements\_Announcements.xml"/>
+    <Script file="Gears.lua"/>
+</Ui>

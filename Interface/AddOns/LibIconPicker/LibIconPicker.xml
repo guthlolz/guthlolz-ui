@@ -1,0 +1,14 @@
+<!--suppress XmlPathReference -->
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+
+    <Script file="Libs\Namespace.lua"/>
+    <Script file="Libs\Util.lua"/>
+
+    <Include file="Libs\Locales\_Locales.xml"/>
+    <Script file="Libs\Help\TourList.lua"/>
+    <Script file="Libs\Help\HelpTour.lua"/>
+    <Include file='Libs\IconSelector.xml'/>
+    <Script file="Libs\LibIconPicker.lua"/>
+
+</Ui>

@@ -1,0 +1,2 @@
+
+AdiBagsDB = nil

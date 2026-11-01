@@ -1,0 +1,9 @@
+<Bindings>
+
+<!--
+    <Binding name="GEARS_OPTIONS_DLG" category="BINDING_HEADER_GEARS_CATEGORY" header="GEARS_GENERAL">
+        ABP:OpenConfig();
+    </Binding>
+    <Binding name="CLICK GearsButton1:LeftButton" category="BINDING_HEADER_GEARS_CATEGORY" header="GEARS_HEADER_ACTIONBAR1"/>
+-->
+</Bindings>

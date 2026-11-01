@@ -1,0 +1,10 @@
+## Interface: 38002
+# WOW_INTERFACE_TARGETS: wrath-titan
+## Title: WeakAuras Archive
+## Author: The WeakAuras Team
+## Version: 5.22.1
+## IconTexture: Interface\AddOns\WeakAuras\Media\Textures\icon.blp
+## LoadOnDemand: 1
+## SavedVariables: WeakAurasArchive
+## Dependencies: WeakAuras
+## AllowLoadGameType: wrath, titan

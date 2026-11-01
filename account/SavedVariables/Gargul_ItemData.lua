@@ -1,0 +1,3 @@
+
+GargulItemDataDB = nil
+GargulSkippedItemDB = nil

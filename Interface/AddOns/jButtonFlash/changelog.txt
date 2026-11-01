@@ -1,0 +1,58 @@
+# jButtonFlash Changelog (TBC Classic Edition)
+
+## Version 2.1.2-TBC - Dominos & Bartender4 TBC Fix
+
+### Fixes
+- **Dominos (TBC Classic)**: Full support for all 14 action bars
+  - Hooks DominosActionButton (bars 1–2, 7–11) and MultiBar*ActionButton (bars 3–6, 12–14)
+  - Parent + Hotkey child hook so mouse and keybound clicks trigger the flash
+  - Delayed and periodic re-hook so bars created on demand get the effect
+- **Bartender4**: Confirmed working on TBC (no code change required)
+
+### Supported Action Bars (this release)
+- Blizzard default action bars
+- Pet bar, Shapeshift/Stance bar
+- **Dominos** (all 14 bars, TBC)
+- **Bartender4** (TBC)
+- ElvUI: not tested; if support is needed, please request in the CurseForge comments
+
+### Usage
+- `/jbf` or minimap button to open settings
+
+---
+
+## Version 2.1.1-TBC - TBC Classic 2.5.5 Port
+
+### Compatibility
+- **Ported to TBC Classic 2.5.5**: Full compatibility with Interface 20505
+- Adapted for TBC Classic's modern API framework (C_AddOns, BackdropTemplate)
+
+### Features
+- **Flash Effect**: Visual feedback when pressing action buttons
+- **Size Slider (1-6)**: Controls the size of the flash effect
+- **Brightness Slider (1-6)**: Controls color intensity and glow strength
+- **Color Picker**: Choose custom flash colors
+- **Color Presets**: 10 ready-to-use colors (Gold, Holy, Arcane, Frost, Fire, Fel, Shadow, Blood, Nature, White)
+- **Random Colors**: Toggle for randomized flash colors
+- **Minimap Button**: Quick access to settings
+  - Left-click: Open settings
+  - Right-click: Toggle random colors
+  - Draggable around the minimap
+
+### Supported Action Bars (at that time)
+- Blizzard Default Action Bars (1-4)
+- Pet Action Bar
+- Shapeshift/Stance Bar
+- Bartender4
+- Dominos
+- ElvUI
+
+### Usage
+- Type `/jbf` to open the settings panel
+- Or click the minimap button
+
+---
+
+## Original Credits
+- Based on jButtonFlash by Meltdowntek-Spineshatter
+- TBC Classic port by EnjoyMyGripz Edition

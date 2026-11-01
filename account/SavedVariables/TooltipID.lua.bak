@@ -1,0 +1,10 @@
+
+TooltipID_GlobalSettings = {
+["idTable"] = {
+["itemID"] = true,
+["UnitDebuff"] = true,
+["UnitBuff"] = true,
+["UnitAura"] = true,
+["spellID"] = true,
+},
+}

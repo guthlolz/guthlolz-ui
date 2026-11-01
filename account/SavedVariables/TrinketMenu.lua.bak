@@ -1,0 +1,2 @@
+
+TrinketMenuOptions = nil

@@ -1,0 +1,24 @@
+
+Unforvegan_BISDB = {
+["showDropRates"] = false,
+["remoteScoreRequests"] = true,
+["hitCapped"] = false,
+["showInspect"] = true,
+["settingsVersion"] = 6,
+["minimap"] = false,
+["phase3ForcedMigrationVersion"] = 1,
+["remoteScorePolicy"] = "everyone",
+["simpleGearSetsEnabled"] = true,
+["showPercent"] = true,
+["maxPhase"] = 4,
+["inspectMovable"] = false,
+["phase4ForcedMigrationVersion"] = 1,
+["debugInspect"] = false,
+}
+TBCA_BIS_TrackerDB = {
+["lists"] = {
+},
+["lootAlertEnabled"] = true,
+["version"] = 1,
+["lootAlertSound"] = true,
+}
